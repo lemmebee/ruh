@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruh . روح</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .font-amiri {
+            font-family: 'Amiri', serif;
+        }
+        .font-garamond {
+            font-family: 'EB Garamond', serif;
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* iPhone-style Scroller Styles */
+        .ayah-scroller-container {
+            height: 200px; /* 5 items * 40px item height */
+            position: relative;
+            overflow: hidden;
+        }
+        .ayah-scroller {
+            height: 100%;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            -webkit-overflow-scrolling: touch; /* For smooth scrolling on iOS */
+        }
+        /* Hide scrollbar across browsers */
+        .ayah-scroller::-webkit-scrollbar { display: none; }
+        .ayah-scroller { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .ayah-scroller-item {
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #9ca3af; /* gray-400 */
+            scroll-snap-align: center;
+            transition: color 0.3s, font-weight 0.3s;
+        }
+        .selection-indicator {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            transform: translateY(-50%);
+            height: 40px;
+            background-color: rgba(13, 148, 136, 0.08); /* teal-700 with opacity */
+            border-top: 2px solid #0d9488; /* teal-700 */
+            border-bottom: 2px solid #0d9488; /* teal-700 */
+            pointer-events: none; /* Allows clicks/scrolls to pass through */
+            z-index: 1;
+        }
+        .scroller-fade {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            pointer-events: none;
+            background: linear-gradient(to bottom, white 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,0) 60%, white 100%);
+            z-index: 2;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Main Application Container -->
+    <div id="app" class="container mx-auto p-4 md:p-8 max-w-5xl">
+        
+        <!-- Header -->
+        <header class="mb-8">
+            <!-- Single Integrated Header Card -->
+            <div class="bg-white p-6 rounded-xl shadow-lg">
+                <!-- Top Section: Logo & Auth -->
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <!-- Logo -->
+                    <div class="flex items-baseline gap-2">
+                        <h1 class="text-4xl md:text-5xl font-bold text-teal-700 font-garamond">Ruh</h1>
+                        <span class="text-3xl md:text-4xl text-blue-600">•</span>
+                        <span class="font-amiri text-5xl md:text-6xl text-teal-500">رُوحُ</span>
+                    </div>
+                    <!-- Auth Buttons -->
+                    <div id="auth-container" class="flex-shrink-0 w-full sm:w-auto flex justify-end">
+                        <button id="login-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition">Login</button>
+                        <div id="user-info" class="hidden flex flex-col sm:flex-row items-end sm:items-center gap-2">
+                            <span id="user-email" class="text-sm text-gray-600 sm:mr-4"></span>
+                            <button id="logout-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition">Logout</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Description -->
+                <p class="text-gray-600 mt-4 max-w-4xl font-garamond italic text-lg">Nourish your soul, one verse at a time. <br>Ruh is your sanctuary for connecting with your inner peace. Track your progress, deepen your spiritual journey with a simple tracker.</p>
+                
+                <!-- Stats Dashboard (visible on login) -->
+                <div id="dashboard-header" class="hidden">
+                    <!-- Divider -->
+                    <hr class="my-6 border-gray-200">
+                    <!-- Stats Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                        <!-- Overall Progress Stat -->
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Overall Progress</p>
+                            <p id="overall-progress-text" class="text-4xl font-bold text-teal-600 mt-1">0%</p>
+                        </div>
+                        <!-- Ayahs Read Stat -->
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Ayahs Read</p>
+                            <p id="ayahs-read-text" class="text-4xl font-bold text-teal-600 mt-1">0 / 6236</p>
+                        </div>
+                        <!-- Surahs Completed Stat -->
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Surahs Completed</p>
+                            <p id="surahs-completed-text" class="text-4xl font-bold text-teal-600 mt-1">0 / 114</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Surah List -->
+        <main id="surah-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Surah cards will be dynamically inserted here -->
+        </main>
+
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center hidden z-50 p-4">
+        <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-sm relative">
+            <button id="close-modal-btn" class="absolute top-4 right-4 text-2xl text-gray-500 hover:text-gray-800">&times;</button>
+            <h2 id="auth-modal-title" class="text-2xl font-bold mb-6 text-center text-gray-700">Login</h2>
+            <div id="auth-feedback" class="p-3 rounded-md mb-4 text-sm hidden"></div>
+            <form id="auth-form">
+                <div class="mb-4">
+                    <label for="email" class="block text-sm font-medium text-gray-600 mb-1">Email</label>
+                    <input type="email" id="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500" required>
+                </div>
+                <div id="password-field" class="mb-6">
+                    <div class="flex justify-between items-center mb-1">
+                        <label for="password" class="block text-sm font-medium text-gray-600">Password</label>
+                        <a href="#" id="forgot-password-link" class="text-xs text-teal-600 hover:underline">Forgot Password?</a>
+                    </div>
+                    <input type="password" id="password" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500" required>
+                </div>
+                <button type="submit" id="auth-submit-btn" class="w-full bg-teal-600 text-white py-2 rounded-lg hover:bg-teal-700 transition">Login</button>
+            </form>
+             <p id="switch-auth-container" class="text-xs text-gray-500 mt-4 text-center">
+                <a href="#" id="switch-auth-mode" class="text-teal-600 hover:underline">Don't have an account? Sign Up</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Set Progress Modal -->
+    <div id="set-progress-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center hidden z-50 p-4">
+        <div id="set-progress-modal-content" class="bg-white p-6 rounded-lg shadow-2xl w-full max-w-xs flex flex-col">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <h2 id="progress-modal-title" class="text-xl font-bold text-teal-700"></h2>
+                <button id="close-progress-modal-btn" class="text-2xl text-gray-500 hover:text-gray-800">&times;</button>
+            </div>
+            <div class="flex-grow space-y-4 py-4">
+                <label class="block text-center text-lg font-medium text-gray-700">I have read up to Ayah:</label>
+                <div class="ayah-scroller-container">
+                    <div class="selection-indicator"></div>
+                    <div class="scroller-fade"></div>
+                    <div id="ayah-scroller" class="ayah-scroller">
+                        <!-- Ayah numbers will be dynamically inserted here -->
+                    </div>
+                </div>
+                <div class="text-center text-sm text-gray-500">
+                    <p>Or mark as:</p>
+                    <div class="flex justify-center gap-2 mt-2">
+                        <button id="mark-all-btn" class="text-sm bg-gray-200 px-3 py-1 rounded-full hover:bg-gray-300 active:bg-teal-100 active:scale-95 transform transition">Completed</button>
+                        <button id="mark-none-btn" class="text-sm bg-gray-200 px-3 py-1 rounded-full hover:bg-gray-300 active:bg-teal-100 active:scale-95 transform transition">Not Started</button>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end">
+                <button id="save-progress-btn" class="w-full bg-teal-600 text-white px-6 py-2 rounded-lg shadow hover:bg-teal-700 transition">Save & Close</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyBD0tba22zj4LkzKWg649dStIpe6JJKveM",
+          authDomain: "ruh-6b545.firebaseapp.com",
+          databaseURL: "https://ruh-6b545-default-rtdb.europe-west1.firebasedatabase.app",
+          projectId: "ruh-6b545",
+          storageBucket: "ruh-6b545.appspot.com",
+          messagingSenderId: "443250051402",
+          appId: "1:443250051402:web:bf5bf42e78f164375c99b3",
+          measurementId: "G-PF8VC4WKYG"
+        };
+
+        if (typeof __firebase_config !== 'undefined') {
+            Object.assign(firebaseConfig, JSON.parse(__firebase_config));
+        }
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { 
+            getAuth, onAuthStateChanged, signOut, createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword, sendPasswordResetEmail
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { 
+            getFirestore, doc, setDoc, getDoc, onSnapshot
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- DATA ---
+        const surahs = [
+            { "id": 1, "name": "Al-Fatihah", "arabic": "ٱلْفَاتِحَة", "ayahs": 7 },
+            { "id": 2, "name": "Al-Baqarah", "arabic": "ٱلْبَقَرَة", "ayahs": 286 },
+            { "id": 3, "name": "Aal-E-Imran", "arabic": "آلِ عِمْرَان", "ayahs": 200 },
+            { "id": 4, "name": "An-Nisa", "arabic": "ٱلنِّسَاء", "ayahs": 176 },
+            { "id": 5, "name": "Al-Ma'idah", "arabic": "ٱلْمَائِدَة", "ayahs": 120 },
+            { "id": 6, "name": "Al-An'am", "arabic": "ٱلْأَنْعَام", "ayahs": 165 },
+            { "id": 7, "name": "Al-A'raf", "arabic": "ٱلْأَعْرَاف", "ayahs": 206 },
+            { "id": 8, "name": "Al-Anfal", "arabic": "ٱلْأَنْفَال", "ayahs": 75 },
+            { "id": 9, "name": "At-Tawbah", "arabic": "ٱلتَّوْبَة", "ayahs": 129 },
+            { "id": 10, "name": "Yunus", "arabic": "يُونُس", "ayahs": 109 },
+            { "id": 11, "name": "Hud", "arabic": "هُود", "ayahs": 123 },
+            { "id": 12, "name": "Yusuf", "arabic": "يُوسُف", "ayahs": 111 },
+            { "id": 13, "name": "Ar-Ra'd", "arabic": "ٱلرَّعْد", "ayahs": 43 },
+            { "id": 14, "name": "Ibrahim", "arabic": "إِبْرَاهِيم", "ayahs": 52 },
+            { "id": 15, "name": "Al-Hijr", "arabic": "ٱلْحِجْر", "ayahs": 99 },
+            { "id": 16, "name": "An-Nahl", "arabic": "ٱلنَّحْل", "ayahs": 128 },
+            { "id": 17, "name": "Al-Isra", "arabic": "ٱلْإِسْرَاء", "ayahs": 111 },
+            { "id": 18, "name": "Al-Kahf", "arabic": "ٱلْكَهْف", "ayahs": 110 },
+            { "id": 19, "name": "Maryam", "arabic": "مَرْيَم", "ayahs": 98 },
+            { "id": 20, "name": "Taha", "arabic": "طه", "ayahs": 135 },
+            { "id": 21, "name": "Al-Anbiya", "arabic": "ٱلْأَنْبِيَاء", "ayahs": 112 },
+            { "id": 22, "name": "Al-Hajj", "arabic": "ٱلْحَجّ", "ayahs": 78 },
+            { "id": 23, "name": "Al-Mu'minun", "arabic": "ٱلْمُؤْمِنُون", "ayahs": 118 },
+            { "id": 24, "name": "An-Nur", "arabic": "ٱلنُّور", "ayahs": 64 },
+            { "id": 25, "name": "Al-Furqan", "arabic": "ٱلْفُرْقَان", "ayahs": 77 },
+            { "id": 26, "name": "Ash-Shu'ara", "arabic": "ٱلشُّعَرَاء", "ayahs": 227 },
+            { "id": 27, "name": "An-Naml", "arabic": "ٱلنَّمْل", "ayahs": 93 },
+            { "id": 28, "name": "Al-Qasas", "arabic": "ٱلْقَصَص", "ayahs": 88 },
+            { "id": 29, "name": "Al-Ankabut", "arabic": "ٱلْعَنْكَبُوت", "ayahs": 69 },
+            { "id": 30, "name": "Ar-Rum", "arabic": "ٱلرُّوم", "ayahs": 60 },
+            { "id": 31, "name": "Luqman", "arabic": "لُقْمَان", "ayahs": 34 },
+            { "id": 32, "name": "As-Sajdah", "arabic": "ٱلسَّجْدَة", "ayahs": 30 },
+            { "id": 33, "name": "Al-Ahzab", "arabic": "ٱلْأَحْزَاب", "ayahs": 73 },
+            { "id": 34, "name": "Saba", "arabic": "سَبَأ", "ayahs": 54 },
+            { "id": 35, "name": "Fatir", "arabic": "فَاطِر", "ayahs": 45 },
+            { "id": 36, "name": "Ya-Sin", "arabic": "يس", "ayahs": 83 },
+            { "id": 37, "name": "As-Saffat", "arabic": "ٱلصَّافَّات", "ayahs": 182 },
+            { "id": 38, "name": "Sad", "arabic": "ص", "ayahs": 88 },
+            { "id": 39, "name": "Az-Zumar", "arabic": "ٱلزُّمَر", "ayahs": 75 },
+            { "id": 40, "name": "Ghafir", "arabic": "غَافِر", "ayahs": 85 },
+            { "id": 41, "name": "Fussilat", "arabic": "فُصِّلَت", "ayahs": 54 },
+            { "id": 42, "name": "Ash-Shura", "arabic": "ٱلشُّورىٰ", "ayahs": 53 },
+            { "id": 43, "name": "Az-Zukhruf", "arabic": "ٱلزُّخْرُف", "ayahs": 89 },
+            { "id": 44, "name": "Ad-Dukhan", "arabic": "ٱلدُّخَان", "ayahs": 59 },
+            { "id": 45, "name": "Al-Jathiyah", "arabic": "ٱلْجَاثِيَة", "ayahs": 37 },
+            { "id": 46, "name": "Al-Ahqaf", "arabic": "ٱلْأَحْقَاف", "ayahs": 35 },
+            { "id": 47, "name": "Muhammad", "arabic": "مُحَمَّد", "ayahs": 38 },
+            { "id": 48, "name": "Al-Fath", "arabic": "ٱلْفَتْح", "ayahs": 29 },
+            { "id": 49, "name": "Al-Hujurat", "arabic": "ٱلْحُجُرَات", "ayahs": 18 },
+            { "id": 50, "name": "Qaf", "arabic": "ق", "ayahs": 45 },
+            { "id": 51, "name": "Adh-Dhariyat", "arabic": "ٱلذَّارِيَات", "ayahs": 60 },
+            { "id": 52, "name": "At-Tur", "arabic": "ٱلطُّور", "ayahs": 49 },
+            { "id": 53, "name": "An-Najm", "arabic": "ٱلنَّجْم", "ayahs": 62 },
+            { "id": 54, "name": "Al-Qamar", "arabic": "ٱلْقَمَر", "ayahs": 55 },
+            { "id": 55, "name": "Ar-Rahman", "arabic": "ٱلرَّحْمَٰن", "ayahs": 78 },
+            { "id": 56, "name": "Al-Waqi'ah", "arabic": "ٱلْوَاقِعَة", "ayahs": 96 },
+            { "id": 57, "name": "Al-Hadid", "arabic": "ٱلْحَدِيد", "ayahs": 29 },
+            { "id": 58, "name": "Al-Mujadilah", "arabic": "ٱلْمُجَادِلَة", "ayahs": 22 },
+            { "id": 59, "name": "Al-Hashr", "arabic": "ٱلْحَشْر", "ayahs": 24 },
+            { "id": 60, "name": "Al-Mumtahanah", "arabic": "ٱلْمُمْتَحَنَة", "ayahs": 13 },
+            { "id": 61, "name": "As-Saff", "arabic": "ٱلصَّفّ", "ayahs": 14 },
+            { "id": 62, "name": "Al-Jumu'ah", "arabic": "ٱلْجُمُعَة", "ayahs": 11 },
+            { "id": 63, "name": "Al-Munafiqun", "arabic": "ٱلْمُنَافِقُون", "ayahs": 11 },
+            { "id": 64, "name": "At-Taghabun", "arabic": "ٱلتَّغَابُن", "ayahs": 18 },
+            { "id": 65, "name": "At-Talaq", "arabic": "ٱلطَّلَاق", "ayahs": 12 },
+            { "id": 66, "name": "At-Tahrim", "arabic": "ٱلتَّحْرِيم", "ayahs": 12 },
+            { "id": 67, "name": "Al-Mulk", "arabic": "ٱلْمُلْك", "ayahs": 30 },
+            { "id": 68, "name": "Al-Qalam", "arabic": "ٱلْقَلَم", "ayahs": 52 },
+            { "id": 69, "name": "Al-Haqqah", "arabic": "ٱلْحَاقَّة", "ayahs": 52 },
+            { "id": 70, "name": "Al-Ma'arij", "arabic": "ٱلْمَعَارِج", "ayahs": 44 },
+            { "id": 71, "name": "Nuh", "arabic": "نُوح", "ayahs": 28 },
+            { "id": 72, "name": "Al-Jinn", "arabic": "ٱلْجِنّ", "ayahs": 28 },
+            { "id": 73, "name": "Al-Muzzammil", "arabic": "ٱلْمُزَّمِّل", "ayahs": 20 },
+            { "id": 74, "name": "Al-Muddaththir", "arabic": "ٱلْمُدَّثِّر", "ayahs": 56 },
+            { "id": 75, "name": "Al-Qiyamah", "arabic": "ٱلْقِيَامَة", "ayahs": 40 },
+            { "id": 76, "name": "Al-Insan", "arabic": "ٱلْإِنْسَان", "ayahs": 31 },
+            { "id": 77, "name": "Al-Mursalat", "arabic": "ٱلْمُرْسَلَات", "ayahs": 50 },
+            { "id": 78, "name": "An-Naba", "arabic": "ٱلنَّبَأ", "ayahs": 40 },
+            { "id": 79, "name": "An-Nazi'at", "arabic": "ٱلنَّازِعَات", "ayahs": 46 },
+            { "id": 80, "name": "Abasa", "arabic": "عَبَسَ", "ayahs": 42 },
+            { "id": 81, "name": "At-Takwir", "arabic": "ٱلتَّكْوِير", "ayahs": 29 },
+            { "id": 82, "name": "Al-Infitar", "arabic": "ٱلْإِنْفِطَار", "ayahs": 19 },
+            { "id": 83, "name": "Al-Mutaffifin", "arabic": "ٱلْمُطَفِّفِين", "ayahs": 36 },
+            { "id": 84, "name": "Al-Inshiqaq", "arabic": "ٱلْإِنْشِقَاق", "ayahs": 25 },
+            { "id": 85, "name": "Al-Buruj", "arabic": "ٱلْبُرُوج", "ayahs": 22 },
+            { "id": 86, "name": "At-Tariq", "arabic": "ٱلطَّارِق", "ayahs": 17 },
+            { "id": 87, "name": "Al-A'la", "arabic": "ٱلْأَعْلَىٰ", "ayahs": 19 },
+            { "id": 88, "name": "Al-Ghashiyah", "arabic": "ٱلْغَاشِيَة", "ayahs": 26 },
+            { "id": 89, "name": "Al-Fajr", "arabic": "ٱلْفَجْر", "ayahs": 30 },
+            { "id": 90, "name": "Al-Balad", "arabic": "ٱلْبَلَد", "ayahs": 20 },
+            { "id": 91, "name": "Ash-Shams", "arabic": "ٱلشَّمْس", "ayahs": 15 },
+            { "id": 92, "name": "Al-Layl", "arabic": "ٱللَّيْل", "ayahs": 21 },
+            { "id": 93, "name": "Ad-Duha", "arabic": "ٱلضُّحَىٰ", "ayahs": 11 },
+            { "id": 94, "name": "Ash-Sharh", "arabic": "ٱلشَّرْح", "ayahs": 8 },
+            { "id": 95, "name": "At-Tin", "arabic": "ٱلتِّين", "ayahs": 8 },
+            { "id": 96, "name": "Al-Alaq", "arabic": "ٱلْعَلَق", "ayahs": 19 },
+            { "id": 97, "name": "Al-Qadr", "arabic": "ٱلْقَدْر", "ayahs": 5 },
+            { "id": 98, "name": "Al-Bayyinah", "arabic": "ٱلْبَيِّنَة", "ayahs": 8 },
+            { "id": 99, "name": "Az-Zalzalah", "arabic": "ٱلزَّلْزَلَة", "ayahs": 8 },
+            { "id": 100, "name": "Al-Adiyat", "arabic": "ٱلْعَادِيَات", "ayahs": 11 },
+            { "id": 101, "name": "Al-Qari'ah", "arabic": "ٱلْقَارِعَة", "ayahs": 11 },
+            { "id": 102, "name": "At-Takathur", "arabic": "ٱلتَّكَاثُر", "ayahs": 8 },
+            { "id": 103, "name": "Al-Asr", "arabic": "ٱلْعَصْر", "ayahs": 3 },
+            { "id": 104, "name": "Al-Humazah", "arabic": "ٱلْهُمَزَة", "ayahs": 9 },
+            { "id": 105, "name": "Al-Fil", "arabic": "ٱلْفِيل", "ayahs": 5 },
+            { "id": 106, "name": "Quraysh", "arabic": "قُرَيْش", "ayahs": 4 },
+            { "id": 107, "name": "Al-Ma'un", "arabic": "ٱلْمَاعُون", "ayahs": 7 },
+            { "id": 108, "name": "Al-Kawthar", "arabic": "ٱلْكَوْثَر", "ayahs": 3 },
+            { "id": 109, "name": "Al-Kafirun", "arabic": "ٱلْكَافِرُون", "ayahs": 6 },
+            { "id": 110, "name": "An-Nasr", "arabic": "ٱلنَّصْر", "ayahs": 3 },
+            { "id": 111, "name": "Al-Masad", "arabic": "ٱلْمَسَد", "ayahs": 5 },
+            { "id": 112, "name": "Al-Ikhlas", "arabic": "ٱلْإِخْلَاص", "ayahs": 4 },
+            { "id": 113, "name": "Al-Falaq", "arabic": "ٱلْفَلَق", "ayahs": 5 },
+            { "id": 114, "name": "An-Nas", "arabic": "ٱلنَّاس", "ayahs": 6 }
+        ];
+        const totalAyahs = surahs.reduce((sum, s) => sum + s.ayahs, 0);
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        let userProgress = {};
+        let unsubscribeProgress = null; 
+        let isLoginMode = true;
+        let currentlyEditingSurahId = null;
+        let scrollTimeout;
+
+        const surahListContainer = document.getElementById('surah-list');
+        const loginBtn = document.getElementById('login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const userInfo = document.getElementById('user-info');
+        const userEmailSpan = document.getElementById('user-email');
+        const authModal = document.getElementById('auth-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const authForm = document.getElementById('auth-form');
+        const authModalTitle = document.getElementById('auth-modal-title');
+        const authSubmitBtn = document.getElementById('auth-submit-btn');
+        const authFeedback = document.getElementById('auth-feedback');
+        const switchAuthModeLink = document.getElementById('switch-auth-mode');
+        const passwordField = document.getElementById('password-field');
+        const forgotPasswordLink = document.getElementById('forgot-password-link');
+        
+        const dashboardHeader = document.getElementById('dashboard-header');
+        const overallProgressText = document.getElementById('overall-progress-text');
+        const ayahsReadText = document.getElementById('ayahs-read-text');
+        const surahsCompletedText = document.getElementById('surahs-completed-text');
+        
+        const setProgressModal = document.getElementById('set-progress-modal');
+        const closeProgressModalBtn = document.getElementById('close-progress-modal-btn');
+        const progressModalTitle = document.getElementById('progress-modal-title');
+        const ayahScroller = document.getElementById('ayah-scroller');
+        const saveProgressBtn = document.getElementById('save-progress-btn');
+        const markAllBtn = document.getElementById('mark-all-btn');
+        const markNoneBtn = document.getElementById('mark-none-btn');
+
+        // --- AUTHENTICATION ---
+        
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                userEmailSpan.textContent = user.email || 'Anonymous';
+                userInfo.classList.remove('hidden');
+                loginBtn.classList.add('hidden');
+                authModal.classList.add('hidden');
+                dashboardHeader.classList.remove('hidden');
+                await setupUserProgressListener(user.uid);
+            } else {
+                currentUser = null;
+                if (unsubscribeProgress) unsubscribeProgress();
+                userProgress = {};
+                updateUIForLoggedOut();
+            }
+        });
+        
+        // --- NEW HELPER FUNCTIONS for consistent feedback styling ---
+        const showAuthFeedback = (message, type = 'error') => {
+            authFeedback.textContent = message;
+            // Reset styling classes
+            authFeedback.classList.remove('bg-green-100', 'text-green-700', 'bg-red-100', 'text-red-700');
+            
+            if (type === 'error') {
+                authFeedback.classList.add('bg-red-100', 'text-red-700');
+            } else { // success
+                authFeedback.classList.add('bg-green-100', 'text-green-700');
+            }
+            authFeedback.classList.remove('hidden');
+        };
+
+        const hideAuthFeedback = () => {
+            authFeedback.classList.add('hidden');
+        };
+        // --- END NEW HELPER FUNCTIONS ---
+
+        const handleAuthFormSubmit = async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            hideAuthFeedback(); // Use helper to hide previous messages
+
+            try {
+                if (isLoginMode) {
+                    await signInWithEmailAndPassword(auth, email, password);
+                } else {
+                    await createUserWithEmailAndPassword(auth, email, password);
+                }
+                authForm.reset();
+            } catch (error) {
+                // Use helper to show error message with consistent styling
+                showAuthFeedback(error.message, 'error');
+            }
+        };
+
+        const handleForgotPassword = async () => {
+             const email = document.getElementById('email').value;
+             if (!email) {
+                // Use helper to show error
+                showAuthFeedback('Please enter your email address first.', 'error');
+                return;
+             }
+             try {
+                await sendPasswordResetEmail(auth, email);
+                // Use helper to show success message
+                showAuthFeedback('Password reset email sent! Check your inbox.', 'success');
+             } catch (error) {
+                // Use helper to show error
+                showAuthFeedback(error.message, 'error');
+             }
+        };
+
+        const setupUserProgressListener = async (userId) => {
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+            const userProgressDocRef = doc(db, `artifacts/${appId}/users/${userId}/quranProgress/data`);
+
+            const docSnap = await getDoc(userProgressDocRef);
+            if (!docSnap.exists()) {
+                const initialProgress = {};
+                surahs.forEach(s => { initialProgress[s.id] = Array(s.ayahs).fill(false); });
+                await setDoc(userProgressDocRef, { progress: initialProgress });
+            }
+
+            unsubscribeProgress = onSnapshot(userProgressDocRef, (doc) => {
+                const data = doc.data();
+                if (data && data.progress) {
+                    userProgress = data.progress;
+                    renderSurahList();
+                    updateOverallProgress();
+                }
+            }, (error) => console.error("Error listening to progress updates:", error));
+        };
+
+        // --- UI & LOGIC ---
+        const renderSurahList = () => {
+            surahListContainer.innerHTML = '';
+            surahs.forEach(surah => {
+                const surahProgressArray = Array.isArray(userProgress[surah.id]) ? userProgress[surah.id] : [];
+                const readAyahs = surahProgressArray.filter(Boolean).length;
+                const progress = surah.ayahs > 0 ? (readAyahs / surah.ayahs) * 100 : 0;
+
+                const card = document.createElement('div');
+                card.className = 'bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer';
+                card.dataset.surahId = surah.id;
+                
+                card.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-sm text-gray-400">Surah ${surah.id}</p>
+                            <h3 class="text-lg font-semibold text-gray-800">${surah.name}</h3>
+                            <p class="text-2xl font-amiri text-teal-800 mt-1">${surah.arabic}</p>
+                        </div>
+                        <div class="text-right flex-shrink-0 ml-4">
+                            <p class="text-2xl font-bold text-teal-600">${Math.round(progress)}%</p>
+                            <p class="text-xs text-gray-500">${readAyahs} / ${surah.ayahs} Ayahs</p>
+                        </div>
+                    </div>
+                `;
+                card.addEventListener('click', () => openSetProgressModal(surah.id));
+                surahListContainer.appendChild(card);
+            });
+        };
+        
+        const updateUIForLoggedOut = () => {
+            userInfo.classList.add('hidden');
+            loginBtn.classList.remove('hidden');
+            dashboardHeader.classList.add('hidden');
+            surahListContainer.innerHTML = '<p class="text-center col-span-full text-gray-500">Please log in to track your progress.</p>';
+        };
+        
+        const openSetProgressModal = (surahId) => {
+            if (!currentUser) return;
+            const surah = surahs.find(s => s.id === surahId);
+            if (!surah) return;
+            
+            currentlyEditingSurahId = surahId;
+            progressModalTitle.innerHTML = `${surah.name} <span class="font-amiri text-teal-600">${surah.arabic}</span>`;
+            ayahScroller.innerHTML = '';
+
+            const paddingEl = () => { const el = document.createElement('div'); el.className = 'ayah-scroller-item'; return el; };
+            ayahScroller.appendChild(paddingEl());
+            ayahScroller.appendChild(paddingEl());
+
+            for (let i = 0; i <= surah.ayahs; i++) {
+                const item = document.createElement('div');
+                item.className = 'ayah-scroller-item';
+                item.dataset.value = i;
+                item.textContent = i === 0 ? 'Not Started' : `${i}`;
+                ayahScroller.appendChild(item);
+            }
+
+            ayahScroller.appendChild(paddingEl());
+            ayahScroller.appendChild(paddingEl());
+
+            const surahProgressArray = Array.isArray(userProgress[surahId]) ? userProgress[surahId] : [];
+            const lastReadAyah = surahProgressArray.filter(Boolean).length;
+            
+            setTimeout(() => {
+                const itemHeight = 40;
+                ayahScroller.scrollTop = lastReadAyah * itemHeight;
+            }, 0);
+
+            setProgressModal.classList.remove('hidden');
+        };
+
+        const handleSaveProgress = async () => {
+            if (!currentUser || currentlyEditingSurahId === null) return;
+
+            const surahId = currentlyEditingSurahId;
+            const surah = surahs.find(s => s.id === surahId);
+            const itemHeight = 40;
+            const lastReadCount = Math.round(ayahScroller.scrollTop / itemHeight);
+
+            const newProgressArray = Array(surah.ayahs).fill(false).map((_, i) => i < lastReadCount);
+
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+            const userProgressDocRef = doc(db, `artifacts/${appId}/users/${currentUser.uid}/quranProgress/data`);
+
+            try {
+                await setDoc(userProgressDocRef, { progress: { [surahId]: newProgressArray } }, { merge: true });
+            } catch (error) {
+                console.error("Error saving progress:", error);
+            } finally {
+                setProgressModal.classList.add('hidden');
+                currentlyEditingSurahId = null;
+            }
+        };
+
+        const updateOverallProgress = () => {
+            let totalRead = 0;
+            let surahsCompleted = 0;
+
+            Object.entries(userProgress).forEach(([surahId, ayahs]) => {
+                if (Array.isArray(ayahs)) {
+                    const readCount = ayahs.filter(Boolean).length;
+                    totalRead += readCount;
+                    const surahInfo = surahs.find(s => s.id == surahId);
+                    if (surahInfo && readCount === surahInfo.ayahs) {
+                        surahsCompleted++;
+                    }
+                }
+            });
+            
+            const percentage = totalAyahs > 0 ? (totalRead / totalAyahs) * 100 : 0;
+            
+            overallProgressText.textContent = `${percentage.toFixed(1)}%`;
+            ayahsReadText.textContent = `${totalRead} / ${totalAyahs}`;
+            surahsCompletedText.textContent = `${surahsCompleted} / 114`;
+        };
+
+        // --- EVENT LISTENERS ---
+        loginBtn.addEventListener('click', () => {
+            isLoginMode = true;
+            authModalTitle.textContent = 'Login';
+            authSubmitBtn.textContent = 'Login';
+            switchAuthModeLink.textContent = 'Don\'t have an account? Sign Up';
+            forgotPasswordLink.style.display = 'block';
+            hideAuthFeedback(); // Use helper
+            authForm.reset();
+            authModal.classList.remove('hidden');
+        });
+        
+        switchAuthModeLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            isLoginMode = !isLoginMode;
+            authModalTitle.textContent = isLoginMode ? 'Login' : 'Sign Up';
+            authSubmitBtn.textContent = isLoginMode ? 'Login' : 'Sign Up';
+            switchAuthModeLink.textContent = isLoginMode ? 'Don\'t have an account? Sign Up' : 'Already have an account? Login';
+            forgotPasswordLink.style.display = isLoginMode ? 'block' : 'none';
+            hideAuthFeedback(); // Use helper
+            authForm.reset();
+        });
+
+        forgotPasswordLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            handleForgotPassword();
+        });
+
+        logoutBtn.addEventListener('click', () => signOut(auth));
+        closeModalBtn.addEventListener('click', () => authModal.classList.add('hidden'));
+        authForm.addEventListener('submit', handleAuthFormSubmit);
+
+        closeProgressModalBtn.addEventListener('click', () => setProgressModal.classList.add('hidden'));
+        saveProgressBtn.addEventListener('click', handleSaveProgress);
+        
+        setProgressModal.addEventListener('click', (e) => {
+            if (e.target === setProgressModal) handleSaveProgress();
+        });
+
+        const scrollToAyah = (ayahNumber) => {
+            ayahScroller.scrollTo({ top: ayahNumber * 40, behavior: 'smooth' });
+        };
+
+        markAllBtn.addEventListener('click', () => {
+            const surah = surahs.find(s => s.id === currentlyEditingSurahId);
+            if(surah) scrollToAyah(surah.ayahs);
+        });
+
+        markNoneBtn.addEventListener('click', () => scrollToAyah(0));
+
+        ayahScroller.addEventListener('scroll', () => {
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                const itemHeight = 40;
+                const snappedScrollTop = Math.round(ayahScroller.scrollTop / itemHeight) * itemHeight;
+                ayahScroller.scrollTo({ top: snappedScrollTop, behavior: 'smooth' });
+            }, 150);
+        });
+
+        // Initial render
+        renderSurahList();
+    </script>
+</body>
+</html>
