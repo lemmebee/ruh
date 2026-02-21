@@ -10,51 +10,23 @@
         theme: {
           extend: {
             colors: {
-              "islamic-gold": "#D4AF37",
-              "islamic-emerald": "#0D9488",
-              "islamic-teal": "#0F766E",
-              "islamic-blue": "#1E3A8A",
-              "islamic-navy": "#1E293B",
+              "ruh-navy": "#0a0f1e",
+              "ruh-deep": "#0f1729",
+              "ruh-teal": "#14b8a6",
+              "ruh-teal-dark": "#0d9488",
+              "ruh-gold": "#d4a017",
+              "ruh-gold-light": "#f0d060",
+              "ruh-blue": "#1e3a8a",
+              "ruh-surface": "#1a2332",
+              "ruh-card": "rgba(255,255,255,0.04)",
+              "ruh-card-hover": "rgba(255,255,255,0.08)",
               "warm-white": "#FEFDFB",
-              "soft-gray": "#F8F9FA",
-              pearl: "#F1F5F9",
+              "soft-cream": "#faf7f2",
             },
             fontFamily: {
               amiri: ["Amiri", "serif"],
               garamond: ["EB Garamond", "serif"],
               inter: ["Inter", "sans-serif"],
-            },
-            animation: {
-              "fade-in": "fadeIn 0.6s ease-in-out",
-              "slide-up": "slideUp 0.5s ease-out",
-              "scale-in": "scaleIn 0.3s ease-out",
-              "pulse-gentle": "pulseGentle 2s ease-in-out infinite",
-              float: "float 6s ease-in-out infinite",
-            },
-            keyframes: {
-              fadeIn: {
-                "0%": { opacity: "0", transform: "translateY(10px)" },
-                "100%": { opacity: "1", transform: "translateY(0)" },
-              },
-              slideUp: {
-                "0%": { opacity: "0", transform: "translateY(20px)" },
-                "100%": { opacity: "1", transform: "translateY(0)" },
-              },
-              scaleIn: {
-                "0%": { opacity: "0", transform: "scale(0.95)" },
-                "100%": { opacity: "1", transform: "scale(1)" },
-              },
-              pulseGentle: {
-                "0%, 100%": { opacity: "1" },
-                "50%": { opacity: "0.8" },
-              },
-              float: {
-                "0%, 100%": { transform: "translateY(0px)" },
-                "50%": { transform: "translateY(-5px)" },
-              },
-            },
-            backdropBlur: {
-              xs: "2px",
             },
           },
         },
@@ -66,736 +38,925 @@
       href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+
+      /* Scrollbar */
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: rgba(20,184,166,0.3); border-radius: 3px; }
+
+      /* Geometric pattern overlay */
+      .geo-pattern {
+        background-image:
+          radial-gradient(circle at 20% 50%, rgba(20,184,166,0.06) 0%, transparent 50%),
+          radial-gradient(circle at 80% 20%, rgba(212,160,23,0.05) 0%, transparent 40%),
+          radial-gradient(circle at 60% 80%, rgba(20,184,166,0.04) 0%, transparent 40%);
+      }
+
+      /* Glow effect */
+      .arabic-glow {
+        text-shadow: 0 0 40px rgba(20,184,166,0.4), 0 0 80px rgba(20,184,166,0.15);
+      }
+
+      /* Animations */
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes slideUp {
+        from { opacity: 0; transform: translateY(40px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+      }
+      @keyframes pulseGlow {
+        0%, 100% { opacity: 0.6; }
+        50% { opacity: 1; }
+      }
+      @keyframes countUp {
+        from { opacity: 0; transform: scale(0.8); }
+        to { opacity: 1; transform: scale(1); }
+      }
+      @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+      }
+      @keyframes slideInBottom {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+      }
+      @keyframes starPulse {
+        0%, 100% { opacity: 0.3; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.2); }
+      }
+      @keyframes starDrift {
+        0%, 100% { transform: translate(0, 0); }
+        25% { transform: translate(2px, -3px); }
+        50% { transform: translate(-1px, 2px); }
+        75% { transform: translate(3px, 1px); }
+      }
+      @keyframes starTwinkle {
+        0%, 100% { opacity: 0.15; }
+        50% { opacity: 0.8; }
+      }
+      @keyframes logoFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-6px); }
+      }
+
+      .animate-fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
+      .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
+      .animate-slide-up { animation: slideUp 0.5s ease-out forwards; }
+      .animate-float { animation: float 6s ease-in-out infinite; }
+      .animate-pulse-glow { animation: pulseGlow 3s ease-in-out infinite; }
+      .animate-star-pulse { animation: starPulse 4s ease-in-out infinite; }
+      .animate-star-drift { animation: starDrift 8s ease-in-out infinite, starTwinkle 3s ease-in-out infinite; }
+      .animate-logo-float { animation: logoFloat 5s ease-in-out infinite; }
+
+      /* Stagger children */
+      .stagger-children > * { opacity: 0; animation: fadeInUp 0.5s ease-out forwards; }
+      .stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
+      .stagger-children > *:nth-child(2) { animation-delay: 0.1s; }
+      .stagger-children > *:nth-child(3) { animation-delay: 0.15s; }
+
+      /* 3D tilt card */
+      .tilt-card {
+        transform-style: preserve-3d;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .tilt-card:hover {
+        box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 30px rgba(20,184,166,0.1);
+      }
+
+      /* Glassmorphism */
+      .glass {
+        background: rgba(255,255,255,0.06);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+      .glass-light {
+        background: rgba(255,255,255,0.85);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,255,255,0.3);
+      }
+
+      /* Ripple effect */
+      .ripple {
+        position: relative;
+        overflow: hidden;
+      }
+      .ripple::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at var(--ripple-x, 50%) var(--ripple-y, 50%), rgba(255,255,255,0.3) 0%, transparent 60%);
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .ripple:active::after {
+        opacity: 1;
+      }
+
+      /* Skeleton loading */
+      .skeleton {
+        background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        border-radius: 8px;
+      }
+
+      /* Bottom sheet */
+      .bottom-sheet {
+        animation: slideInBottom 0.3s ease-out;
+      }
+      @media (max-width: 640px) {
+        .modal-content-responsive {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          max-height: 90vh;
+          border-radius: 24px 24px 0 0;
+          animation: slideInBottom 0.3s ease-out;
+        }
+      }
+
+      /* Toast */
+      .toast {
+        animation: fadeInUp 0.3s ease-out forwards;
+      }
+      .toast-exit {
+        animation: fadeIn 0.3s ease-out reverse forwards;
+      }
+
+      /* Hadith fade */
+      .hadith-text-transition {
+        transition: opacity 0.4s ease, transform 0.4s ease;
+      }
+      .hadith-text-hidden {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      /* Language pill active */
+      .lang-pill-active {
+        background: linear-gradient(135deg, #14b8a6, #0d9488);
+        color: white;
+        box-shadow: 0 4px 15px rgba(20,184,166,0.4);
+      }
+
+      /* Search input */
+      .search-input:focus {
+        box-shadow: 0 0 0 3px rgba(20,184,166,0.2);
+      }
+
+      /* Progress ring animation */
+      .progress-ring-circle {
+        transition: stroke-dasharray 1s ease-out;
+      }
+
+      /* Card entrance via IntersectionObserver */
+      .card-hidden {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      .card-visible {
+        opacity: 1;
+        transform: translateY(0);
+        transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+      }
+
+      /* Hero star decoration */
+      .hero-star {
+        position: absolute;
+        width: 3px;
+        height: 3px;
+        background: rgba(255,255,255,0.5);
+        border-radius: 50%;
+        box-shadow: 0 0 4px rgba(255,255,255,0.3);
+      }
+      .hero-star-sm {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        background: rgba(255,255,255,0.3);
+        border-radius: 50%;
+      }
+      .hero-star-lg {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: rgba(212,160,23,0.6);
+        border-radius: 50%;
+        box-shadow: 0 0 8px rgba(212,160,23,0.4);
+      }
+    </style>
   </head>
-  <body
-    class="bg-gradient-to-br from-warm-white to-soft-gray text-gray-800 min-h-screen"
-  >
-    <!-- Islamic geometric pattern background -->
-    <div class="fixed inset-0 opacity-30 pointer-events-none">
-      <div
-        class="absolute top-0 left-0 w-full h-full"
-        style="
-          background-image: radial-gradient(
-              circle at 25% 25%,
-              rgba(212, 175, 55, 0.03) 0%,
-              transparent 25%
-            ),
-            radial-gradient(
-              circle at 75% 75%,
-              rgba(15, 123, 108, 0.03) 0%,
-              transparent 25%
-            );
-        "
-      ></div>
+  <body class="bg-soft-cream text-gray-800 min-h-screen font-inter">
+
+    <!-- Toast container -->
+    <div id="toast-container" class="fixed top-4 right-4 z-[100] flex flex-col gap-2"></div>
+
+    <!-- Loading skeleton -->
+    <div id="loading" class="fixed inset-0 bg-ruh-navy z-50 flex items-center justify-center transition-opacity duration-500">
+      <div class="text-center">
+        <div class="relative w-20 h-20 mx-auto mb-6">
+          <div class="absolute inset-0 border-2 border-ruh-teal/20 rounded-full"></div>
+          <div class="absolute inset-0 border-2 border-transparent border-t-ruh-teal rounded-full animate-spin"></div>
+          <div class="absolute inset-2 border-2 border-transparent border-t-ruh-gold rounded-full animate-spin" style="animation-direction:reverse;animation-duration:1.5s"></div>
+        </div>
+        <p class="text-ruh-teal/80 font-garamond text-lg tracking-wide">Loading your journey...</p>
+      </div>
     </div>
 
-    <!-- Floating decorative elements -->
-    <div
-      class="fixed top-20 right-10 w-32 h-32 bg-gradient-to-br from-islamic-gold/5 to-transparent rounded-full blur-xl animate-float hidden lg:block"
-    ></div>
-    <div
-      class="fixed bottom-32 left-10 w-24 h-24 bg-gradient-to-tr from-islamic-teal/5 to-transparent rounded-full blur-xl animate-float hidden lg:block"
-      style="animation-delay: 2s"
-    ></div>
+    <!-- ==================== HERO HEADER ==================== -->
+    <header class="relative bg-gradient-to-br from-ruh-navy via-ruh-deep to-[#0a1628] overflow-hidden">
+      <div class="geo-pattern absolute inset-0"></div>
 
-    <!-- Main Application Container -->
-    <div id="app" class="container mx-auto p-4 md:p-8 max-w-6xl relative z-10">
-      <!-- Loading indicator for better UX -->
-      <div
-        id="loading"
-        class="fixed inset-0 bg-warm-white/80 backdrop-blur-sm flex items-center justify-center z-50"
-      >
-        <div class="text-center">
-          <div
-            class="w-16 h-16 border-4 border-islamic-teal/20 border-t-islamic-teal rounded-full animate-spin mx-auto mb-4"
-          ></div>
-          <p class="text-islamic-blue font-medium">
-            Loading your spiritual journey...
-          </p>
+      <!-- Ambient glow -->
+      <div class="absolute top-10 left-[10%] w-64 h-64 bg-ruh-teal/5 rounded-full blur-3xl animate-float"></div>
+      <div class="absolute bottom-10 right-[10%] w-48 h-48 bg-ruh-gold/5 rounded-full blur-3xl animate-float" style="animation-delay:3s"></div>
+
+      <!-- Starry sky -->
+      <!-- Large gold stars -->
+      <div class="hero-star-lg animate-star-drift" style="top:12%;left:18%;animation-delay:0s,0.5s"></div>
+      <div class="hero-star-lg animate-star-drift" style="top:25%;right:12%;animation-delay:2s,1s"></div>
+      <div class="hero-star-lg animate-star-drift" style="top:55%;left:8%;animation-delay:4s,2.5s"></div>
+      <div class="hero-star-lg animate-star-drift" style="top:18%;right:28%;animation-delay:1s,0s"></div>
+      <div class="hero-star-lg animate-star-drift" style="bottom:30%;left:35%;animation-delay:3s,1.5s"></div>
+      <div class="hero-star-lg animate-star-drift" style="top:40%;right:8%;animation-delay:5s,3s"></div>
+      <!-- Medium white stars -->
+      <div class="hero-star animate-star-drift" style="top:8%;left:45%;animation-delay:0.5s,0s"></div>
+      <div class="hero-star animate-star-drift" style="top:22%;left:5%;animation-delay:1.5s,2s"></div>
+      <div class="hero-star animate-star-drift" style="top:35%;left:55%;animation-delay:3s,0.5s"></div>
+      <div class="hero-star animate-star-drift" style="top:48%;right:25%;animation-delay:2.5s,1.5s"></div>
+      <div class="hero-star animate-star-drift" style="top:65%;left:22%;animation-delay:4.5s,2s"></div>
+      <div class="hero-star animate-star-drift" style="top:15%;right:45%;animation-delay:0s,3s"></div>
+      <div class="hero-star animate-star-drift" style="top:70%;right:15%;animation-delay:1s,0.5s"></div>
+      <div class="hero-star animate-star-drift" style="bottom:20%;left:60%;animation-delay:3.5s,1s"></div>
+      <div class="hero-star animate-star-drift" style="top:42%;left:12%;animation-delay:5.5s,2.5s"></div>
+      <div class="hero-star animate-star-drift" style="top:5%;right:10%;animation-delay:2s,0s"></div>
+      <!-- Small dim stars -->
+      <div class="hero-star-sm animate-star-drift" style="top:10%;left:32%;animation-delay:0.3s,1s"></div>
+      <div class="hero-star-sm animate-star-drift" style="top:28%;left:70%;animation-delay:1.8s,0.5s"></div>
+      <div class="hero-star-sm animate-star-drift" style="top:52%;left:42%;animation-delay:2.8s,2s"></div>
+      <div class="hero-star-sm animate-star-drift" style="top:38%;right:38%;animation-delay:4s,0.3s"></div>
+      <div class="hero-star-sm animate-star-drift" style="top:75%;left:48%;animation-delay:0.8s,1.8s"></div>
+      <div class="hero-star-sm animate-star-drift" style="top:18%;left:82%;animation-delay:3.2s,0.8s"></div>
+      <div class="hero-star-sm animate-star-drift" style="top:60%;right:32%;animation-delay:1.2s,2.2s"></div>
+      <div class="hero-star-sm animate-star-drift" style="top:45%;left:25%;animation-delay:5s,0.2s"></div>
+      <div class="hero-star-sm animate-star-drift" style="bottom:35%;right:55%;animation-delay:2.2s,1.2s"></div>
+      <div class="hero-star-sm animate-star-drift" style="top:33%;left:90%;animation-delay:0.5s,3s"></div>
+      <div class="hero-star-sm animate-star-drift" style="top:8%;left:60%;animation-delay:4.2s,0.7s"></div>
+      <div class="hero-star-sm animate-star-drift" style="top:68%;left:75%;animation-delay:1.5s,2.8s"></div>
+
+      <!-- Auth pill (top-right) -->
+      <div class="relative z-20 flex justify-end p-4 sm:p-6">
+        <div id="auth-container">
+          <button id="login-btn" class="glass rounded-full px-5 py-2.5 text-sm font-medium text-white/90 hover:bg-white/10 transition-all duration-300 flex items-center gap-2 ripple">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
+            Login
+          </button>
+          <div id="user-info" class="hidden items-center gap-3">
+            <span id="user-email" class="text-sm text-white/60 hidden sm:inline"></span>
+            <button id="logout-btn" class="glass rounded-full px-5 py-2.5 text-sm font-medium text-white/90 hover:bg-white/10 transition-all duration-300 flex items-center gap-2 ripple">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+              Logout
+            </button>
+          </div>
         </div>
       </div>
 
-      <!-- App content will be loaded here by JavaScript -->
-    </div>
+      <!-- Hero content -->
+      <div class="relative z-10 text-center pb-16 pt-4 sm:pt-8 sm:pb-20 px-4">
+        <!-- Logo -->
+        <div class="animate-fade-in-up mb-6">
+          <div class="flex items-center justify-center gap-3 sm:gap-4 mb-4 animate-logo-float">
+            <h1 class="text-5xl sm:text-7xl font-bold bg-gradient-to-r from-ruh-teal to-ruh-gold-light bg-clip-text text-transparent font-garamond">Ruh</h1>
+            <span class="text-2xl sm:text-3xl text-ruh-gold animate-pulse-glow">✦</span>
+            <span class="font-amiri text-6xl sm:text-8xl text-ruh-teal arabic-glow">رُوحُ</span>
+          </div>
+          <p class="text-white/40 font-garamond text-lg sm:text-xl tracking-widest uppercase">Nourish your soul</p>
+        </div>
 
-    <style>
-      @keyframes float {
-        0%,
-        100% {
-          transform: translateY(0px);
-        }
-        50% {
-          transform: translateY(-10px);
-        }
-      }
-      .animate-float {
-        animation: float 6s ease-in-out infinite;
-      }
-    </style>
+        <!-- Tagline -->
+        <p class="text-white/50 max-w-lg mx-auto text-sm sm:text-base leading-relaxed animate-fade-in" style="animation-delay:0.3s">
+          Your sanctuary for spiritual growth. Track your Quran journey with intention and beauty.
+        </p>
 
-    <script>
-      // Hide loading screen after page loads
-      window.addEventListener("load", () => {
-        setTimeout(() => {
-          const loading = document.getElementById("loading");
-          if (loading) {
-            loading.style.display = "none";
-          }
-        }, 1000);
-      });
-
-      // Initialize the app
-      document.getElementById("app").innerHTML = `
-            <!-- Header -->
-            <header class="mb-12 animate-fade-in">
-                <!-- Single Integrated Header Card -->
-                <div class="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl p-8 relative overflow-hidden border border-white/20">
-                    <!-- Decorative elements -->
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-islamic-gold/10 to-transparent rounded-full -translate-y-16 translate-x-16"></div>
-                    <div class="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-islamic-teal/10 to-transparent rounded-full translate-y-12 -translate-x-12"></div>
-                    
-                    <!-- Top Section: Logo & Auth -->
-                    <div class="flex flex-col gap-6 relative z-10">
-                        <!-- Logo -->
-                        <div class="flex flex-col sm:flex-row items-center sm:items-baseline justify-center sm:justify-start gap-2 sm:gap-3 animate-float text-center sm:text-left pt-3">
-                            <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold bg-gradient-to-r from-islamic-teal to-islamic-gold bg-clip-text text-transparent font-garamond">Ruh</h1>
-                            <span class="text-3xl sm:text-4xl md:text-5xl text-islamic-gold animate-pulse">✦</span>
-                            <span class="font-amiri text-5xl sm:text-6xl md:text-7xl text-islamic-teal">رُوحُ</span>
-                        </div>
-                        
-                        <!-- Auth Buttons -->
-                        <div id="auth-container" class="flex justify-center sm:justify-end">
-                            <button id="login-btn" class="bg-gradient-to-r from-islamic-teal to-islamic-blue text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl shadow-lg font-semibold text-base sm:text-lg flex items-center gap-2 hover:scale-105 hover:shadow-xl transition-all duration-300 group w-full sm:w-auto justify-center">
-                                <svg class="w-5 h-5 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
-                                </svg>
-                                Login
-                            </button>
-                            <div id="user-info" class="hidden flex flex-col items-center sm:items-end gap-3 w-full sm:w-auto">
-                                <div class="text-center sm:text-right">
-                                    <p class="text-xs text-islamic-teal/70 font-medium">Welcome back</p>
-                                    <span id="user-email" class="text-sm text-islamic-blue font-semibold"></span>
-                                </div>
-                                <button id="logout-btn" class="bg-gradient-to-r from-islamic-teal to-islamic-blue text-white px-6 py-3 rounded-xl shadow-lg font-medium flex items-center gap-2 hover:scale-105 transition-all duration-300 group w-full sm:w-auto justify-center">
-                                    <svg class="w-5 h-5 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                                    </svg>
-                                    Logout
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Description -->
-                    <div class="mt-6 sm:mt-8 relative z-10 text-center sm:text-left">
-                        <p class="text-islamic-blue/80 max-w-4xl font-garamond text-lg sm:text-xl leading-relaxed">
-                            <span class="text-xl sm:text-2xl text-islamic-teal font-semibold block sm:inline">✨ Nourish your soul, one verse at a time.</span>
-                            <span class="block mt-4 sm:mt-0 sm:inline">
-                                <br class="hidden sm:block"><br class="hidden sm:block">
-                                Ruh is your sanctuary for connecting with your inner peace. Track your progress, deepen your spiritual journey with our beautiful and intuitive tracker.
-                            </span>
-                        </p>
-                    </div>
-                    
-                    <!-- Stats Dashboard (visible on login) -->
-                    <div id="dashboard-header" class="hidden animate-slide-up">
-                        <!-- Elegant Divider -->
-                        <div class="my-8 flex items-center">
-                            <div class="flex-1 h-px bg-gradient-to-r from-transparent via-islamic-gold/30 to-transparent"></div>
-                            <div class="px-4 text-islamic-gold text-xl">✦</div>
-                            <div class="flex-1 h-px bg-gradient-to-r from-transparent via-islamic-gold/30 to-transparent"></div>
-                        </div>
-                        
-                        <!-- Enhanced Stats Grid -->
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-                            <!-- Overall Progress Stat -->
-                            <div class="bg-gradient-to-br from-islamic-teal/5 to-islamic-blue/5 p-4 sm:p-6 rounded-2xl border border-islamic-teal/10 text-center group hover:scale-105 transition-transform duration-300">
-                                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-islamic-teal to-islamic-blue rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 group-hover:rotate-12 transition-transform">
-                                    <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                                    </svg>
-                                </div>
-                                <p class="text-xs sm:text-sm font-semibold text-islamic-blue/70 mb-2">Overall Progress</p>
-                                <p id="overall-progress-text" class="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-islamic-teal to-islamic-gold bg-clip-text text-transparent">0%</p>
-                                <div class="w-full bg-gray-200 rounded-full h-1.5 sm:h-2 mt-2 sm:mt-3">
-                                    <div id="overall-progress-bar" class="bg-gradient-to-r from-islamic-teal to-islamic-gold h-1.5 sm:h-2 rounded-full transition-all duration-1000" style="width: 0%"></div>
-                                </div>
-                            </div>
-                            
-                            <!-- Ayahs Read Stat -->
-                            <div class="bg-gradient-to-br from-islamic-gold/5 to-islamic-teal/5 p-4 sm:p-6 rounded-2xl border border-islamic-gold/10 text-center group hover:scale-105 transition-transform duration-300">
-                                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-islamic-gold to-islamic-teal rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 group-hover:rotate-12 transition-transform">
-                                    <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                                    </svg>
-                                </div>
-                                <p class="text-xs sm:text-sm font-semibold text-islamic-blue/70 mb-2">Ayahs Read</p>
-                                <p id="ayahs-read-text" class="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-islamic-teal to-islamic-gold bg-clip-text text-transparent">0 / 6236</p>
-                                <p class="text-xs text-islamic-teal/60 mt-1 sm:mt-2 font-medium">Verses completed</p>
-                            </div>
-                            
-                            <!-- Surahs Completed Stat -->
-                            <div class="bg-gradient-to-br from-islamic-blue/5 to-islamic-gold/5 p-4 sm:p-6 rounded-2xl border border-islamic-blue/10 text-center group hover:scale-105 transition-transform duration-300">
-                                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-islamic-blue to-islamic-gold rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 group-hover:rotate-12 transition-transform">
-                                    <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                </div>
-                                <p class="text-xs sm:text-sm font-semibold text-islamic-blue/70 mb-2">Surahs Completed</p>
-                                <p id="surahs-completed-text" class="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-islamic-teal to-islamic-gold bg-clip-text text-transparent">0 / 114</p>
-                                <p class="text-xs text-islamic-teal/60 mt-1 sm:mt-2 font-medium">Chapters finished</p>
-                            </div>
-                        </div>
-                    </div>
+        <!-- Dashboard stats (shown when logged in) -->
+        <div id="dashboard-header" class="hidden mt-10 sm:mt-14 max-w-3xl mx-auto animate-slide-up">
+          <div class="grid grid-cols-3 gap-3 sm:gap-5 stagger-children">
+            <!-- Overall Progress -->
+            <div class="glass rounded-2xl p-4 sm:p-6 group hover:bg-white/10 transition-all duration-300">
+              <div class="relative w-14 h-14 sm:w-20 sm:h-20 mx-auto mb-3">
+                <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                  <path class="text-white/10" stroke="currentColor" stroke-width="3" fill="none" d="M18 2.0845a15.9155 15.9155 0 010 31.831 15.9155 15.9155 0 010-31.831"/>
+                  <path id="overall-ring" class="text-ruh-teal progress-ring-circle" stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none" stroke-dasharray="0, 100" d="M18 2.0845a15.9155 15.9155 0 010 31.831 15.9155 15.9155 0 010-31.831"/>
+                </svg>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <span id="overall-progress-text" class="text-sm sm:text-lg font-bold text-white">0%</span>
                 </div>
-            </header>
-
-            <!-- Surah List -->
-            <main id="surah-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-                <!-- Surah cards will be dynamically inserted here -->
-                <div class="text-center col-span-full py-12 sm:py-16">
-                    <div class="text-5xl sm:text-6xl mb-4 animate-pulse">📖</div>
-                    <p class="text-islamic-blue/60 text-base sm:text-lg font-medium px-4">Please log in to track your spiritual journey</p>
-                    <p class="text-islamic-blue/40 text-sm mt-2 px-4">Your progress will be safely stored and synced across devices</p>
-                </div>
-            </main>
-            
-            <!-- Beautiful Footer -->
-            <footer class="mt-16 text-center">
-                <div class="bg-white/60 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
-                    <div class="flex items-center justify-center gap-2 mb-3">
-                        <span class="text-islamic-gold text-xl">✦</span>
-                        <p class="text-islamic-navy/70 font-garamond text-lg font-medium">Made with ♥ for spiritual growth</p>
-                        <span class="text-islamic-gold text-xl">✦</span>
-                    </div>
-                    <p class="text-islamic-blue/50 text-sm font-amiri">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
-                </div>
-            </footer>
-        `;
-    </script>
-
-    <!-- Auth Modal -->
-    <div
-      id="auth-modal"
-      class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4"
-    >
-      <div
-        class="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl w-full max-w-md relative overflow-hidden"
-      >
-        <!-- Decorative background -->
-        <div
-          class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-islamic-gold/10 to-transparent rounded-full -translate-y-20 translate-x-20"
-        ></div>
-        <div
-          class="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-islamic-teal/10 to-transparent rounded-full translate-y-16 -translate-x-16"
-        ></div>
-
-        <div class="relative z-10 p-8">
-          <button
-            id="close-modal-btn"
-            class="absolute top-4 right-4 text-2xl text-islamic-blue/50 hover:text-islamic-blue transition-colors hover:rotate-90 duration-300 w-8 h-8 flex items-center justify-center rounded-full hover:bg-islamic-teal/10"
-          >
-            <svg
-              class="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              ></path>
-            </svg>
-          </button>
-
-          <!-- Header -->
-          <div class="text-center mb-8">
-            <div
-              class="w-16 h-16 bg-gradient-to-br from-islamic-teal to-islamic-blue rounded-full flex items-center justify-center mx-auto mb-4"
-            >
-              <svg
-                class="w-8 h-8 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                ></path>
-              </svg>
+              </div>
+              <p class="text-[10px] sm:text-xs text-white/40 font-medium uppercase tracking-wider">Progress</p>
             </div>
-            <h2
-              id="auth-modal-title"
-              class="text-3xl font-bold bg-gradient-to-r from-islamic-teal to-islamic-gold bg-clip-text text-transparent font-garamond"
-            >
-              Login
-            </h2>
-            <p class="text-islamic-blue/60 mt-2">
-              Access your spiritual journey
-            </p>
+
+            <!-- Ayahs Read -->
+            <div class="glass rounded-2xl p-4 sm:p-6 group hover:bg-white/10 transition-all duration-300">
+              <div class="flex items-center justify-center w-14 h-14 sm:w-20 sm:h-20 mx-auto mb-3">
+                <span id="ayahs-read-text" class="text-xl sm:text-3xl font-bold bg-gradient-to-r from-ruh-teal to-ruh-gold-light bg-clip-text text-transparent">0</span>
+              </div>
+              <p class="text-[10px] sm:text-xs text-white/40 font-medium uppercase tracking-wider">Ayahs Read</p>
+              <p class="text-[10px] text-white/25 mt-0.5">of 6,236</p>
+            </div>
+
+            <!-- Surahs Completed -->
+            <div class="glass rounded-2xl p-4 sm:p-6 group hover:bg-white/10 transition-all duration-300">
+              <div class="flex items-center justify-center w-14 h-14 sm:w-20 sm:h-20 mx-auto mb-3">
+                <span id="surahs-completed-text" class="text-xl sm:text-3xl font-bold bg-gradient-to-r from-ruh-gold to-ruh-teal bg-clip-text text-transparent">0</span>
+              </div>
+              <p class="text-[10px] sm:text-xs text-white/40 font-medium uppercase tracking-wider">Surahs Done</p>
+              <p class="text-[10px] text-white/25 mt-0.5">of 114</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom curve -->
+      <div class="absolute bottom-0 left-0 right-0">
+        <svg viewBox="0 0 1440 60" fill="none" preserveAspectRatio="none" class="w-full h-8 sm:h-12">
+          <path d="M0 60L1440 60L1440 0C1200 50 240 50 0 0L0 60Z" fill="#faf7f2"/>
+        </svg>
+      </div>
+    </header>
+
+    <!-- ==================== DAILY HADITH ==================== -->
+    <section id="hadith-section" class="max-w-4xl mx-auto px-4 -mt-2 sm:mt-4 mb-8 sm:mb-12">
+      <div class="bg-white rounded-3xl shadow-xl shadow-black/5 border border-gray-100 overflow-hidden">
+        <!-- Top accent line -->
+        <div class="h-1 bg-gradient-to-r from-ruh-teal via-ruh-gold to-ruh-teal"></div>
+
+        <div class="p-6 sm:p-8">
+          <!-- Header -->
+          <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center gap-2">
+              <span class="text-ruh-gold text-lg">✦</span>
+              <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-widest">Hadith of the Day</h2>
+              <span class="text-ruh-gold text-lg">✦</span>
+            </div>
+            <!-- Share button -->
+            <button id="hadith-share-btn" class="text-gray-400 hover:text-ruh-teal transition-colors p-2 rounded-full hover:bg-ruh-teal/5" title="Copy to clipboard">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+            </button>
           </div>
 
-          <div
-            id="auth-feedback"
-            class="p-4 rounded-xl mb-6 text-sm hidden"
-          ></div>
-
-          <form id="auth-form" class="space-y-6">
-            <div class="group">
-              <label
-                for="email"
-                class="block text-sm font-semibold text-islamic-blue mb-2"
-                >Email Address</label
-              >
-              <div class="relative">
-                <input
-                  type="email"
-                  id="email"
-                  class="w-full px-4 py-3 border-2 border-islamic-teal/20 rounded-xl focus:ring-2 focus:ring-islamic-teal focus:border-islamic-teal transition-all duration-300 bg-white/50 backdrop-blur-sm"
-                  placeholder="Enter your email"
-                  required
-                />
-                <div class="absolute inset-y-0 right-0 flex items-center pr-3">
-                  <svg
-                    class="w-5 h-5 text-islamic-teal/40 group-focus-within:text-islamic-teal transition-colors"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
-                    ></path>
-                  </svg>
-                </div>
-              </div>
+          <!-- Hadith content -->
+          <div id="hadith-content">
+            <!-- Loading skeleton -->
+            <div id="hadith-skeleton">
+              <div class="skeleton h-6 w-3/4 mx-auto mb-3" style="background:linear-gradient(90deg,#f0f0f0 25%,#e8e8e8 50%,#f0f0f0 75%);background-size:200% 100%;animation:shimmer 1.5s infinite"></div>
+              <div class="skeleton h-6 w-1/2 mx-auto mb-6" style="background:linear-gradient(90deg,#f0f0f0 25%,#e8e8e8 50%,#f0f0f0 75%);background-size:200% 100%;animation:shimmer 1.5s infinite"></div>
+              <div class="skeleton h-4 w-full mb-2" style="background:linear-gradient(90deg,#f0f0f0 25%,#e8e8e8 50%,#f0f0f0 75%);background-size:200% 100%;animation:shimmer 1.5s infinite"></div>
+              <div class="skeleton h-4 w-2/3" style="background:linear-gradient(90deg,#f0f0f0 25%,#e8e8e8 50%,#f0f0f0 75%);background-size:200% 100%;animation:shimmer 1.5s infinite"></div>
             </div>
 
-            <div id="password-field" class="group">
-              <div class="flex justify-between items-center mb-2">
-                <label
-                  for="password"
-                  class="block text-sm font-semibold text-islamic-blue"
-                  >Password</label
-                >
-                <a
-                  href="#"
-                  id="forgot-password-link"
-                  class="text-xs text-islamic-teal hover:text-islamic-blue transition-colors"
-                  >Forgot Password?</a
-                >
-              </div>
-              <div class="relative">
-                <input
-                  type="password"
-                  id="password"
-                  class="w-full px-4 py-3 border-2 border-islamic-teal/20 rounded-xl focus:ring-2 focus:ring-islamic-teal focus:border-islamic-teal transition-all duration-300 bg-white/50 backdrop-blur-sm"
-                  placeholder="Enter your password"
-                  required
-                />
-                <div class="absolute inset-y-0 right-0 flex items-center pr-3">
-                  <svg
-                    class="w-5 h-5 text-islamic-teal/40 group-focus-within:text-islamic-teal transition-colors"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                    ></path>
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                    ></path>
-                  </svg>
-                </div>
-              </div>
+            <!-- Arabic text -->
+            <div id="hadith-arabic" class="hidden hadith-text-transition">
+              <p id="hadith-arabic-text" class="font-amiri text-2xl sm:text-3xl leading-loose text-gray-800 text-right mb-6" dir="rtl"></p>
             </div>
 
-            <button
-              type="submit"
-              id="auth-submit-btn"
-              class="w-full bg-gradient-to-r from-islamic-teal to-islamic-blue text-white py-4 rounded-xl font-semibold text-lg flex items-center justify-center gap-2 hover:scale-105 hover:shadow-xl transition-all duration-300 group"
-            >
-              <svg
-                class="w-5 h-5 group-hover:scale-110 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-                ></path>
-              </svg>
+            <!-- Divider -->
+            <div id="hadith-divider" class="hidden flex items-center my-5">
+              <div class="flex-1 h-px bg-gradient-to-r from-transparent via-ruh-gold/30 to-transparent"></div>
+              <span class="px-3 text-ruh-gold/50 text-sm">✦</span>
+              <div class="flex-1 h-px bg-gradient-to-r from-transparent via-ruh-gold/30 to-transparent"></div>
+            </div>
+
+            <!-- Translation text -->
+            <div id="hadith-translation" class="hidden hadith-text-transition">
+              <p id="hadith-translation-text" class="text-gray-600 leading-relaxed text-sm sm:text-base font-garamond"></p>
+            </div>
+
+            <!-- Description -->
+            <div id="hadith-description-wrapper" class="hidden mt-5 p-4 bg-ruh-teal/5 rounded-xl border border-ruh-teal/10">
+              <div class="flex items-center gap-1.5 mb-2">
+                <svg class="w-4 h-4 text-ruh-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span id="hadith-desc-label" class="text-xs font-semibold text-ruh-teal-dark uppercase tracking-wider">Explanation</span>
+              </div>
+              <p id="hadith-description-text" class="text-sm text-gray-600 leading-relaxed hadith-text-transition"></p>
+            </div>
+
+            <!-- Source -->
+            <p id="hadith-source" class="hidden text-xs text-gray-400 mt-4 font-medium"></p>
+          </div>
+
+          <!-- Language toggle -->
+          <div class="flex items-center justify-center gap-2 mt-6 pt-5 border-t border-gray-100">
+            <button class="lang-pill lang-pill-active rounded-full px-4 py-1.5 text-xs font-semibold transition-all duration-300" data-lang="ar">عربي</button>
+            <button class="lang-pill rounded-full px-4 py-1.5 text-xs font-semibold text-gray-500 bg-gray-100 hover:bg-gray-200 transition-all duration-300" data-lang="en">English</button>
+            <button class="lang-pill rounded-full px-4 py-1.5 text-xs font-semibold text-gray-500 bg-gray-100 hover:bg-gray-200 transition-all duration-300" data-lang="fr">Français</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="max-w-6xl mx-auto px-4 pb-16">
+      <!-- Search / Filter bar -->
+      <div id="search-bar" class="mb-6 sm:mb-8 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+        <div class="relative flex-1">
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input id="search-input" type="text" placeholder="Search surahs..." class="search-input w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-2xl text-sm focus:outline-none focus:border-ruh-teal transition-all duration-300 shadow-sm" />
+        </div>
+        <div class="flex gap-2">
+          <button class="filter-btn filter-btn-active rounded-xl px-4 py-2.5 text-xs font-semibold transition-all duration-200" data-filter="all">All</button>
+          <button class="filter-btn rounded-xl px-4 py-2.5 text-xs font-semibold text-gray-500 bg-white border border-gray-200 hover:border-ruh-teal/30 transition-all duration-200" data-filter="completed">Completed</button>
+          <button class="filter-btn rounded-xl px-4 py-2.5 text-xs font-semibold text-gray-500 bg-white border border-gray-200 hover:border-ruh-teal/30 transition-all duration-200" data-filter="in-progress">In Progress</button>
+          <button class="filter-btn rounded-xl px-4 py-2.5 text-xs font-semibold text-gray-500 bg-white border border-gray-200 hover:border-ruh-teal/30 transition-all duration-200" data-filter="not-started">Not Started</button>
+        </div>
+      </div>
+
+      <!-- Surah grid -->
+      <div id="surah-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+        <!-- Login prompt (shown when logged out) -->
+        <div id="login-prompt" class="text-center col-span-full py-16 sm:py-24">
+          <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-ruh-teal/10 to-ruh-gold/10 rounded-full flex items-center justify-center">
+            <svg class="w-10 h-10 text-ruh-teal/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+          </div>
+          <p class="text-gray-500 text-lg font-garamond mb-2">Log in to track your spiritual journey</p>
+          <p class="text-gray-400 text-sm">Your progress syncs across all your devices</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="bg-gradient-to-br from-ruh-navy to-ruh-deep py-10 px-4">
+      <div class="max-w-4xl mx-auto text-center">
+        <div class="flex items-center justify-center gap-3 mb-3">
+          <span class="text-ruh-gold/50 text-sm">✦</span>
+          <p class="text-white/30 font-garamond text-base">Made with devotion for spiritual growth</p>
+          <span class="text-ruh-gold/50 text-sm">✦</span>
+        </div>
+        <p class="text-white/20 text-sm font-amiri text-lg">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+      </div>
+    </footer>
+
+    <!-- ==================== AUTH MODAL ==================== -->
+    <div id="auth-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center hidden z-50 p-0 sm:p-4">
+      <div class="modal-content-responsive bg-white sm:rounded-3xl shadow-2xl w-full sm:max-w-md relative overflow-hidden">
+        <div class="p-6 sm:p-8">
+          <button id="close-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors p-2 rounded-full hover:bg-gray-100">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+
+          <div class="text-center mb-8">
+            <div class="w-14 h-14 bg-gradient-to-br from-ruh-teal to-ruh-teal-dark rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-ruh-teal/20">
+              <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            </div>
+            <h2 id="auth-modal-title" class="text-2xl font-bold text-gray-800 font-garamond">Login</h2>
+            <p class="text-gray-400 text-sm mt-1">Access your spiritual journey</p>
+          </div>
+
+          <div id="auth-feedback" class="p-3 rounded-xl mb-4 text-sm hidden"></div>
+
+          <form id="auth-form" class="space-y-4">
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-600 mb-1.5">Email</label>
+              <input type="email" id="email" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-ruh-teal/20 focus:border-ruh-teal transition-all text-sm bg-gray-50/50" placeholder="you@example.com" required />
+            </div>
+            <div id="password-field">
+              <div class="flex justify-between items-center mb-1.5">
+                <label for="password" class="block text-sm font-medium text-gray-600">Password</label>
+                <a href="#" id="forgot-password-link" class="text-xs text-ruh-teal hover:text-ruh-teal-dark transition-colors">Forgot?</a>
+              </div>
+              <div class="relative">
+                <input type="password" id="password" class="w-full px-4 py-3 pr-11 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-ruh-teal/20 focus:border-ruh-teal transition-all text-sm bg-gray-50/50" placeholder="••••••••" required />
+                <button type="button" id="toggle-password-btn" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-ruh-teal transition-colors p-0.5" tabindex="-1">
+                  <svg id="eye-icon-show" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                  <svg id="eye-icon-hide" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L6.59 6.59m7.532 7.532l3.29 3.29M3 3l18 18"/></svg>
+                </button>
+              </div>
+            </div>
+            <button type="submit" id="auth-submit-btn" class="w-full bg-gradient-to-r from-ruh-teal to-ruh-teal-dark text-white py-3 rounded-xl font-semibold text-sm hover:shadow-lg hover:shadow-ruh-teal/20 transition-all duration-300 ripple">
               Login
             </button>
           </form>
 
-          <p
-            id="switch-auth-container"
-            class="text-sm text-islamic-blue/60 mt-6 text-center"
-          >
-            <a
-              href="#"
-              id="switch-auth-mode"
-              class="text-islamic-teal hover:text-islamic-blue font-medium transition-colors"
-              >Don't have an account? Sign Up</a
-            >
+          <p class="text-sm text-gray-400 mt-5 text-center">
+            <a href="#" id="switch-auth-mode" class="text-ruh-teal hover:text-ruh-teal-dark font-medium transition-colors">Don't have an account? Sign Up</a>
           </p>
         </div>
       </div>
     </div>
 
-    <!-- Set Progress Modal -->
-    <div
-      id="set-progress-modal"
-      class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4"
-    >
-      <div
-        id="set-progress-modal-content"
-        class="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl w-full max-w-sm flex flex-col relative overflow-hidden"
-      >
-        <!-- Decorative background -->
-        <div
-          class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-islamic-gold/10 to-transparent rounded-full -translate-y-16 translate-x-16"
-        ></div>
+    <!-- ==================== PROGRESS MODAL ==================== -->
+    <div id="set-progress-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center hidden z-50 p-0 sm:p-4">
+      <div class="modal-content-responsive bg-white sm:rounded-3xl shadow-2xl w-full sm:max-w-md relative overflow-hidden">
+        <!-- Drag handle (mobile) -->
+        <div class="sm:hidden flex justify-center pt-3 pb-1">
+          <div class="w-10 h-1 bg-gray-300 rounded-full"></div>
+        </div>
 
-        <div class="relative z-10 p-6">
-          <div class="flex justify-between items-center mb-6">
-            <div>
-              <h2
-                id="progress-modal-title"
-                class="text-xl font-bold bg-gradient-to-r from-islamic-teal to-islamic-gold bg-clip-text text-transparent font-garamond"
-              ></h2>
-              <p class="text-sm text-islamic-blue/60 mt-1">
-                Update your reading progress
-              </p>
-            </div>
-            <button
-              id="close-progress-modal-btn"
-              class="text-2xl text-islamic-blue/50 hover:text-islamic-blue transition-colors hover:rotate-90 duration-300 w-8 h-8 flex items-center justify-center rounded-full hover:bg-islamic-teal/10"
-            >
-              <svg
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M6 18L18 6M6 6l12 12"
-                ></path>
-              </svg>
-            </button>
+        <!-- Header with gradient bg -->
+        <div class="bg-gradient-to-br from-ruh-navy to-ruh-deep p-6 pb-8 relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-ruh-teal/10 rounded-full -translate-y-16 translate-x-16 pointer-events-none"></div>
+          <button id="close-progress-modal-btn" class="absolute top-2 right-2 text-white/80 hover:text-white transition-all p-3 rounded-2xl bg-white/10 hover:bg-white/25 z-20 active:scale-90 backdrop-blur-sm" title="Close (Esc)">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+          <div class="relative z-10">
+            <p class="text-white/40 text-xs font-medium uppercase tracking-widest mb-1">Surah</p>
+            <h2 id="progress-modal-title" class="text-xl font-bold text-white font-garamond"></h2>
           </div>
-
-          <div class="flex-grow space-y-6 py-4">
-            <div class="text-center">
-              <label class="block text-lg font-semibold text-islamic-blue mb-2"
-                >I have read up to Ayah:</label
-              >
-              <p class="text-sm text-islamic-teal/70">
-                Scroll to select your progress
-              </p>
-            </div>
-
-            <div
-              class="ayah-scroller-container relative h-48 overflow-hidden rounded-xl bg-gray-50/50"
-            >
-              <div
-                class="selection-indicator absolute top-1/2 left-0 right-0 transform -translate-y-1/2 h-10 bg-gradient-to-r from-islamic-teal/10 to-islamic-gold/10 border-y-2 border-islamic-teal pointer-events-none z-10"
-              ></div>
-              <div
-                class="scroller-fade absolute inset-0 bg-gradient-to-b from-white via-transparent to-white pointer-events-none z-20"
-              ></div>
-              <div
-                id="ayah-scroller"
-                class="ayah-scroller h-full overflow-y-auto scroll-smooth"
-              >
-                <!-- Ayah numbers will be dynamically inserted here -->
-              </div>
-            </div>
-
-            <div class="text-center">
-              <p class="text-sm text-islamic-blue/60 mb-3">Quick actions:</p>
-              <div class="flex justify-center gap-3">
-                <button
-                  id="mark-all-btn"
-                  class="text-sm bg-gradient-to-r from-islamic-teal/10 to-islamic-blue/10 border border-islamic-teal/20 px-4 py-2 rounded-full hover:from-islamic-teal/20 hover:to-islamic-blue/20 hover:scale-105 transition-all duration-200 text-islamic-blue font-medium"
-                >
-                  ✓ Completed
-                </button>
-                <button
-                  id="mark-none-btn"
-                  class="text-sm bg-gradient-to-r from-gray-100 to-gray-200 border border-gray-300 px-4 py-2 rounded-full hover:from-gray-200 hover:to-gray-300 hover:scale-105 transition-all duration-200 text-gray-600 font-medium"
-                >
-                  ✗ Not Started
-                </button>
+          <!-- Progress ring centered -->
+          <div class="flex justify-center mt-5">
+            <div class="relative w-28 h-28">
+              <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                <path class="text-white/10" stroke="currentColor" stroke-width="2.5" fill="none" d="M18 2.0845a15.9155 15.9155 0 010 31.831 15.9155 15.9155 0 010-31.831"/>
+                <path id="modal-progress-ring" class="text-ruh-teal progress-ring-circle" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none" stroke-dasharray="0, 100" d="M18 2.0845a15.9155 15.9155 0 010 31.831 15.9155 15.9155 0 010-31.831"/>
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center">
+                <span id="modal-progress-pct" class="text-2xl font-bold text-white">0%</span>
+                <span id="modal-ayah-count" class="text-[10px] text-white/40 mt-0.5">0 / 0 ayahs</span>
               </div>
             </div>
           </div>
+        </div>
 
-          <div class="mt-6">
-            <button
-              id="save-progress-btn"
-              class="w-full bg-gradient-to-r from-islamic-teal to-islamic-blue text-white py-4 rounded-xl font-semibold text-lg flex items-center justify-center gap-2 hover:scale-105 hover:shadow-xl transition-all duration-300 group"
-            >
-              <svg
-                class="w-5 h-5 group-hover:scale-110 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M5 13l4 4L19 7"
-                ></path>
-              </svg>
-              Save Progress
+        <div class="p-6">
+          <!-- Ayah scroll counter -->
+          <div class="mb-5">
+            <div class="flex flex-col items-center">
+              <p class="text-xs text-gray-400 font-medium mb-3">I've read up to</p>
+              <div id="ayah-counter-wrapper" class="flex flex-col items-center select-none cursor-ns-resize rounded-2xl bg-gradient-to-b from-gray-50 to-white border border-gray-100 w-36 py-4 shadow-sm">
+                <button id="ayah-inc-btn" class="text-gray-300 hover:text-ruh-teal active:scale-90 transition-all p-1">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+                </button>
+                <div class="relative overflow-hidden h-16 flex items-center justify-center" style="mask-image: linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%);">
+                  <div id="ayah-counter-display" class="transition-transform duration-100 ease-out">
+                    <span id="ayah-counter-num" class="text-5xl font-bold text-ruh-teal tabular-nums leading-none">0</span>
+                  </div>
+                </div>
+                <button id="ayah-dec-btn" class="text-gray-300 hover:text-ruh-teal active:scale-90 transition-all p-1">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+              </div>
+              <p class="text-center mt-2">
+                <span class="text-xs text-gray-400">of <span id="ayah-counter-max" class="font-semibold">0</span> ayahs</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- Quick actions -->
+          <div class="flex gap-2 mb-5">
+            <button id="mark-all-btn" class="flex-1 text-xs bg-ruh-teal/10 text-ruh-teal-dark font-semibold py-2.5 rounded-xl hover:bg-ruh-teal/20 transition-all flex items-center justify-center gap-1.5">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              Complete
+            </button>
+            <button id="mark-none-btn" class="flex-1 text-xs bg-gray-100 text-gray-500 font-semibold py-2.5 rounded-xl hover:bg-gray-200 transition-all flex items-center justify-center gap-1.5">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+              Reset
             </button>
           </div>
+
+          <button id="save-progress-btn" class="w-full bg-gradient-to-r from-ruh-teal to-ruh-teal-dark text-white py-3.5 rounded-xl font-semibold text-sm hover:shadow-lg hover:shadow-ruh-teal/20 transition-all duration-300 flex items-center justify-center gap-2 ripple">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Save Progress
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- Firebase SDK and Application JavaScript -->
+
+    <!-- ==================== FIREBASE + APP JS ==================== -->
     <script type="module">
-      // Firebase configuration
       const firebaseConfig = {
         apiKey: "AIzaSyBD0tba22zj4LkzKWg649dStIpe6JJKveM",
         authDomain: "ruh-6b545.firebaseapp.com",
-        databaseURL:
-          "https://ruh-6b545-default-rtdb.europe-west1.firebasedatabase.app",
+        databaseURL: "https://ruh-6b545-default-rtdb.europe-west1.firebasedatabase.app",
         projectId: "ruh-6b545",
         storageBucket: "ruh-6b545.appspot.com",
         messagingSenderId: "443250051402",
         appId: "1:443250051402:web:bf5bf42e78f164375c99b3",
         measurementId: "G-PF8VC4WKYG",
       };
+      if (typeof __firebase_config !== "undefined") Object.assign(firebaseConfig, JSON.parse(__firebase_config));
 
-      // Override config if custom config is provided
-      if (typeof __firebase_config !== "undefined") {
-        Object.assign(firebaseConfig, JSON.parse(__firebase_config));
-      }
-
-      // Import Firebase modules
       import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-      import {
-        getAuth,
-        onAuthStateChanged,
-        signOut,
-        createUserWithEmailAndPassword,
-        signInWithEmailAndPassword,
-        sendPasswordResetEmail,
-      } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-      import {
-        getFirestore,
-        doc,
-        setDoc,
-        getDoc,
-        onSnapshot,
-      } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+      import { getAuth, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+      import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-      // Initialize Firebase
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
       const db = getFirestore(app);
 
-      // Surah data
+      // ==================== DATA ====================
       const surahs = [
-        { id: 1, name: "Al-Fatihah", arabic: "ٱلْفَاتِحَة", ayahs: 7 },
-        { id: 2, name: "Al-Baqarah", arabic: "ٱلْبَقَرَة", ayahs: 286 },
-        { id: 3, name: "Aal-E-Imran", arabic: "آلِ عِمْرَان", ayahs: 200 },
-        { id: 4, name: "An-Nisa", arabic: "ٱلنِّسَاء", ayahs: 176 },
-        { id: 5, name: "Al-Ma'idah", arabic: "ٱلْمَائِدَة", ayahs: 120 },
-        { id: 6, name: "Al-An'am", arabic: "ٱلْأَنْعَام", ayahs: 165 },
-        { id: 7, name: "Al-A'raf", arabic: "ٱلْأَعْرَاف", ayahs: 206 },
-        { id: 8, name: "Al-Anfal", arabic: "ٱلْأَنْفَال", ayahs: 75 },
-        { id: 9, name: "At-Tawbah", arabic: "ٱلتَّوْبَة", ayahs: 129 },
-        { id: 10, name: "Yunus", arabic: "يُونُس", ayahs: 109 },
-        { id: 11, name: "Hud", arabic: "هُود", ayahs: 123 },
-        { id: 12, name: "Yusuf", arabic: "يُوسُف", ayahs: 111 },
-        { id: 13, name: "Ar-Ra'd", arabic: "ٱلرَّعْد", ayahs: 43 },
-        { id: 14, name: "Ibrahim", arabic: "إِبْرَاهِيم", ayahs: 52 },
-        { id: 15, name: "Al-Hijr", arabic: "ٱلْحِجْر", ayahs: 99 },
-        { id: 16, name: "An-Nahl", arabic: "ٱلنَّحْل", ayahs: 128 },
-        { id: 17, name: "Al-Isra", arabic: "ٱلْإِسْرَاء", ayahs: 111 },
-        { id: 18, name: "Al-Kahf", arabic: "ٱلْكَهْف", ayahs: 110 },
-        { id: 19, name: "Maryam", arabic: "مَرْيَم", ayahs: 98 },
-        { id: 20, name: "Taha", arabic: "طه", ayahs: 135 },
-        { id: 21, name: "Al-Anbiya", arabic: "ٱلْأَنْبِيَاء", ayahs: 112 },
-        { id: 22, name: "Al-Hajj", arabic: "ٱلْحَجّ", ayahs: 78 },
-        { id: 23, name: "Al-Mu'minun", arabic: "ٱلْمُؤْمِنُون", ayahs: 118 },
-        { id: 24, name: "An-Nur", arabic: "ٱلنُّور", ayahs: 64 },
-        { id: 25, name: "Al-Furqan", arabic: "ٱلْفُرْقَان", ayahs: 77 },
-        { id: 26, name: "Ash-Shu'ara", arabic: "ٱلشُّعَرَاء", ayahs: 227 },
-        { id: 27, name: "An-Naml", arabic: "ٱلنَّمْل", ayahs: 93 },
-        { id: 28, name: "Al-Qasas", arabic: "ٱلْقَصَص", ayahs: 88 },
-        { id: 29, name: "Al-Ankabut", arabic: "ٱلْعَنْكَبُوت", ayahs: 69 },
-        { id: 30, name: "Ar-Rum", arabic: "ٱلرُّوم", ayahs: 60 },
-        { id: 31, name: "Luqman", arabic: "لُقْمَان", ayahs: 34 },
-        { id: 32, name: "As-Sajdah", arabic: "ٱلسَّجْدَة", ayahs: 30 },
-        { id: 33, name: "Al-Ahzab", arabic: "ٱلْأَحْزَاب", ayahs: 73 },
-        { id: 34, name: "Saba", arabic: "سَبَأ", ayahs: 54 },
-        { id: 35, name: "Fatir", arabic: "فَاطِر", ayahs: 45 },
-        { id: 36, name: "Ya-Sin", arabic: "يس", ayahs: 83 },
-        { id: 37, name: "As-Saffat", arabic: "ٱلصَّافَّات", ayahs: 182 },
-        { id: 38, name: "Sad", arabic: "ص", ayahs: 88 },
-        { id: 39, name: "Az-Zumar", arabic: "ٱلزُّمَر", ayahs: 75 },
-        { id: 40, name: "Ghafir", arabic: "غَافِر", ayahs: 85 },
-        { id: 41, name: "Fussilat", arabic: "فُصِّلَت", ayahs: 54 },
-        { id: 42, name: "Ash-Shura", arabic: "ٱلشُّورىٰ", ayahs: 53 },
-        { id: 43, name: "Az-Zukhruf", arabic: "ٱلزُّخْرُف", ayahs: 89 },
-        { id: 44, name: "Ad-Dukhan", arabic: "ٱلدُّخَان", ayahs: 59 },
-        { id: 45, name: "Al-Jathiyah", arabic: "ٱلْجَاثِيَة", ayahs: 37 },
-        { id: 46, name: "Al-Ahqaf", arabic: "ٱلْأَحْقَاف", ayahs: 35 },
-        { id: 47, name: "Muhammad", arabic: "مُحَمَّد", ayahs: 38 },
-        { id: 48, name: "Al-Fath", arabic: "ٱلْفَتْح", ayahs: 29 },
-        { id: 49, name: "Al-Hujurat", arabic: "ٱلْحُجُرَات", ayahs: 18 },
-        { id: 50, name: "Qaf", arabic: "ق", ayahs: 45 },
-        { id: 51, name: "Adh-Dhariyat", arabic: "ٱلذَّارِيَات", ayahs: 60 },
-        { id: 52, name: "At-Tur", arabic: "ٱلطُّور", ayahs: 49 },
-        { id: 53, name: "An-Najm", arabic: "ٱلنَّجْم", ayahs: 62 },
-        { id: 54, name: "Al-Qamar", arabic: "ٱلْقَمَر", ayahs: 55 },
-        { id: 55, name: "Ar-Rahman", arabic: "ٱلرَّحْمَٰن", ayahs: 78 },
-        { id: 56, name: "Al-Waqi'ah", arabic: "ٱلْوَاقِعَة", ayahs: 96 },
-        { id: 57, name: "Al-Hadid", arabic: "ٱلْحَدِيد", ayahs: 29 },
-        { id: 58, name: "Al-Mujadilah", arabic: "ٱلْمُجَادِلَة", ayahs: 22 },
-        { id: 59, name: "Al-Hashr", arabic: "ٱلْحَشْر", ayahs: 24 },
-        { id: 60, name: "Al-Mumtahanah", arabic: "ٱلْمُمْتَحَنَة", ayahs: 13 },
-        { id: 61, name: "As-Saff", arabic: "ٱلصَّفّ", ayahs: 14 },
-        { id: 62, name: "Al-Jumu'ah", arabic: "ٱلْجُمُعَة", ayahs: 11 },
-        { id: 63, name: "Al-Munafiqun", arabic: "ٱلْمُنَافِقُون", ayahs: 11 },
-        { id: 64, name: "At-Taghabun", arabic: "ٱلتَّغَابُن", ayahs: 18 },
-        { id: 65, name: "At-Talaq", arabic: "ٱلطَّلَاق", ayahs: 12 },
-        { id: 66, name: "At-Tahrim", arabic: "ٱلتَّحْرِيم", ayahs: 12 },
-        { id: 67, name: "Al-Mulk", arabic: "ٱلْمُلْك", ayahs: 30 },
-        { id: 68, name: "Al-Qalam", arabic: "ٱلْقَلَم", ayahs: 52 },
-        { id: 69, name: "Al-Haqqah", arabic: "ٱلْحَاقَّة", ayahs: 52 },
-        { id: 70, name: "Al-Ma'arij", arabic: "ٱلْمَعَارِج", ayahs: 44 },
-        { id: 71, name: "Nuh", arabic: "نُوح", ayahs: 28 },
-        { id: 72, name: "Al-Jinn", arabic: "ٱلْجِنّ", ayahs: 28 },
-        { id: 73, name: "Al-Muzzammil", arabic: "ٱلْمُزَّمِّل", ayahs: 20 },
-        { id: 74, name: "Al-Muddaththir", arabic: "ٱلْمُدَّثِّر", ayahs: 56 },
-        { id: 75, name: "Al-Qiyamah", arabic: "ٱلْقِيَامَة", ayahs: 40 },
-        { id: 76, name: "Al-Insan", arabic: "ٱلْإِنْسَان", ayahs: 31 },
-        { id: 77, name: "Al-Mursalat", arabic: "ٱلْمُرْسَلَات", ayahs: 50 },
-        { id: 78, name: "An-Naba", arabic: "ٱلنَّبَأ", ayahs: 40 },
-        { id: 79, name: "An-Nazi'at", arabic: "ٱلنَّازِعَات", ayahs: 46 },
-        { id: 80, name: "Abasa", arabic: "عَبَسَ", ayahs: 42 },
-        { id: 81, name: "At-Takwir", arabic: "ٱلتَّكْوِير", ayahs: 29 },
-        { id: 82, name: "Al-Infitar", arabic: "ٱلْإِنْفِطَار", ayahs: 19 },
-        { id: 83, name: "Al-Mutaffifin", arabic: "ٱلْمُطَفِّفِين", ayahs: 36 },
-        { id: 84, name: "Al-Inshiqaq", arabic: "ٱلْإِنْشِقَاق", ayahs: 25 },
-        { id: 85, name: "Al-Buruj", arabic: "ٱلْبُرُوج", ayahs: 22 },
-        { id: 86, name: "At-Tariq", arabic: "ٱلطَّارِق", ayahs: 17 },
-        { id: 87, name: "Al-A'la", arabic: "ٱلْأَعْلَىٰ", ayahs: 19 },
-        { id: 88, name: "Al-Ghashiyah", arabic: "ٱلْغَاشِيَة", ayahs: 26 },
-        { id: 89, name: "Al-Fajr", arabic: "ٱلْفَجْر", ayahs: 30 },
-        { id: 90, name: "Al-Balad", arabic: "ٱلْبَلَد", ayahs: 20 },
-        { id: 91, name: "Ash-Shams", arabic: "ٱلشَّمْس", ayahs: 15 },
-        { id: 92, name: "Al-Layl", arabic: "ٱللَّيْل", ayahs: 21 },
-        { id: 93, name: "Ad-Duha", arabic: "ٱلضُّحَىٰ", ayahs: 11 },
-        { id: 94, name: "Ash-Sharh", arabic: "ٱلشَّرْح", ayahs: 8 },
-        { id: 95, name: "At-Tin", arabic: "ٱلتِّين", ayahs: 8 },
-        { id: 96, name: "Al-Alaq", arabic: "ٱلْعَلَق", ayahs: 19 },
-        { id: 97, name: "Al-Qadr", arabic: "ٱلْقَدْر", ayahs: 5 },
-        { id: 98, name: "Al-Bayyinah", arabic: "ٱلْبَيِّنَة", ayahs: 8 },
-        { id: 99, name: "Az-Zalzalah", arabic: "ٱلزَّلْزَلَة", ayahs: 8 },
-        { id: 100, name: "Al-Adiyat", arabic: "ٱلْعَادِيَات", ayahs: 11 },
-        { id: 101, name: "Al-Qari'ah", arabic: "ٱلْقَارِعَة", ayahs: 11 },
-        { id: 102, name: "At-Takathur", arabic: "ٱلتَّكَاثُر", ayahs: 8 },
-        { id: 103, name: "Al-Asr", arabic: "ٱلْعَصْر", ayahs: 3 },
-        { id: 104, name: "Al-Humazah", arabic: "ٱلْهُمَزَة", ayahs: 9 },
-        { id: 105, name: "Al-Fil", arabic: "ٱلْفِيل", ayahs: 5 },
-        { id: 106, name: "Quraysh", arabic: "قُرَيْش", ayahs: 4 },
-        { id: 107, name: "Al-Ma'un", arabic: "ٱلْمَاعُون", ayahs: 7 },
-        { id: 108, name: "Al-Kawthar", arabic: "ٱلْكَوْثَر", ayahs: 3 },
-        { id: 109, name: "Al-Kafirun", arabic: "ٱلْكَافِرُون", ayahs: 6 },
-        { id: 110, name: "An-Nasr", arabic: "ٱلنَّصْر", ayahs: 3 },
-        { id: 111, name: "Al-Masad", arabic: "ٱلْمَسَد", ayahs: 5 },
-        { id: 112, name: "Al-Ikhlas", arabic: "ٱلْإِخْلَاص", ayahs: 4 },
-        { id: 113, name: "Al-Falaq", arabic: "ٱلْفَلَق", ayahs: 5 },
-        { id: 114, name: "An-Nas", arabic: "ٱلنَّاس", ayahs: 6 },
+        {id:1,name:"Al-Fatihah",arabic:"ٱلْفَاتِحَة",ayahs:7},{id:2,name:"Al-Baqarah",arabic:"ٱلْبَقَرَة",ayahs:286},{id:3,name:"Aal-E-Imran",arabic:"آلِ عِمْرَان",ayahs:200},{id:4,name:"An-Nisa",arabic:"ٱلنِّسَاء",ayahs:176},{id:5,name:"Al-Ma'idah",arabic:"ٱلْمَائِدَة",ayahs:120},{id:6,name:"Al-An'am",arabic:"ٱلْأَنْعَام",ayahs:165},{id:7,name:"Al-A'raf",arabic:"ٱلْأَعْرَاف",ayahs:206},{id:8,name:"Al-Anfal",arabic:"ٱلْأَنْفَال",ayahs:75},{id:9,name:"At-Tawbah",arabic:"ٱلتَّوْبَة",ayahs:129},{id:10,name:"Yunus",arabic:"يُونُس",ayahs:109},
+        {id:11,name:"Hud",arabic:"هُود",ayahs:123},{id:12,name:"Yusuf",arabic:"يُوسُف",ayahs:111},{id:13,name:"Ar-Ra'd",arabic:"ٱلرَّعْد",ayahs:43},{id:14,name:"Ibrahim",arabic:"إِبْرَاهِيم",ayahs:52},{id:15,name:"Al-Hijr",arabic:"ٱلْحِجْر",ayahs:99},{id:16,name:"An-Nahl",arabic:"ٱلنَّحْل",ayahs:128},{id:17,name:"Al-Isra",arabic:"ٱلْإِسْرَاء",ayahs:111},{id:18,name:"Al-Kahf",arabic:"ٱلْكَهْف",ayahs:110},{id:19,name:"Maryam",arabic:"مَرْيَم",ayahs:98},{id:20,name:"Taha",arabic:"طه",ayahs:135},
+        {id:21,name:"Al-Anbiya",arabic:"ٱلْأَنْبِيَاء",ayahs:112},{id:22,name:"Al-Hajj",arabic:"ٱلْحَجّ",ayahs:78},{id:23,name:"Al-Mu'minun",arabic:"ٱلْمُؤْمِنُون",ayahs:118},{id:24,name:"An-Nur",arabic:"ٱلنُّور",ayahs:64},{id:25,name:"Al-Furqan",arabic:"ٱلْفُرْقَان",ayahs:77},{id:26,name:"Ash-Shu'ara",arabic:"ٱلشُّعَرَاء",ayahs:227},{id:27,name:"An-Naml",arabic:"ٱلنَّمْل",ayahs:93},{id:28,name:"Al-Qasas",arabic:"ٱلْقَصَص",ayahs:88},{id:29,name:"Al-Ankabut",arabic:"ٱلْعَنْكَبُوت",ayahs:69},{id:30,name:"Ar-Rum",arabic:"ٱلرُّوم",ayahs:60},
+        {id:31,name:"Luqman",arabic:"لُقْمَان",ayahs:34},{id:32,name:"As-Sajdah",arabic:"ٱلسَّجْدَة",ayahs:30},{id:33,name:"Al-Ahzab",arabic:"ٱلْأَحْزَاب",ayahs:73},{id:34,name:"Saba",arabic:"سَبَأ",ayahs:54},{id:35,name:"Fatir",arabic:"فَاطِر",ayahs:45},{id:36,name:"Ya-Sin",arabic:"يس",ayahs:83},{id:37,name:"As-Saffat",arabic:"ٱلصَّافَّات",ayahs:182},{id:38,name:"Sad",arabic:"ص",ayahs:88},{id:39,name:"Az-Zumar",arabic:"ٱلزُّمَر",ayahs:75},{id:40,name:"Ghafir",arabic:"غَافِر",ayahs:85},
+        {id:41,name:"Fussilat",arabic:"فُصِّلَت",ayahs:54},{id:42,name:"Ash-Shura",arabic:"ٱلشُّورىٰ",ayahs:53},{id:43,name:"Az-Zukhruf",arabic:"ٱلزُّخْرُف",ayahs:89},{id:44,name:"Ad-Dukhan",arabic:"ٱلدُّخَان",ayahs:59},{id:45,name:"Al-Jathiyah",arabic:"ٱلْجَاثِيَة",ayahs:37},{id:46,name:"Al-Ahqaf",arabic:"ٱلْأَحْقَاف",ayahs:35},{id:47,name:"Muhammad",arabic:"مُحَمَّد",ayahs:38},{id:48,name:"Al-Fath",arabic:"ٱلْفَتْح",ayahs:29},{id:49,name:"Al-Hujurat",arabic:"ٱلْحُجُرَات",ayahs:18},{id:50,name:"Qaf",arabic:"ق",ayahs:45},
+        {id:51,name:"Adh-Dhariyat",arabic:"ٱلذَّارِيَات",ayahs:60},{id:52,name:"At-Tur",arabic:"ٱلطُّور",ayahs:49},{id:53,name:"An-Najm",arabic:"ٱلنَّجْم",ayahs:62},{id:54,name:"Al-Qamar",arabic:"ٱلْقَمَر",ayahs:55},{id:55,name:"Ar-Rahman",arabic:"ٱلرَّحْمَٰن",ayahs:78},{id:56,name:"Al-Waqi'ah",arabic:"ٱلْوَاقِعَة",ayahs:96},{id:57,name:"Al-Hadid",arabic:"ٱلْحَدِيد",ayahs:29},{id:58,name:"Al-Mujadilah",arabic:"ٱلْمُجَادِلَة",ayahs:22},{id:59,name:"Al-Hashr",arabic:"ٱلْحَشْر",ayahs:24},{id:60,name:"Al-Mumtahanah",arabic:"ٱلْمُمْتَحَنَة",ayahs:13},
+        {id:61,name:"As-Saff",arabic:"ٱلصَّفّ",ayahs:14},{id:62,name:"Al-Jumu'ah",arabic:"ٱلْجُمُعَة",ayahs:11},{id:63,name:"Al-Munafiqun",arabic:"ٱلْمُنَافِقُون",ayahs:11},{id:64,name:"At-Taghabun",arabic:"ٱلتَّغَابُن",ayahs:18},{id:65,name:"At-Talaq",arabic:"ٱلطَّلَاق",ayahs:12},{id:66,name:"At-Tahrim",arabic:"ٱلتَّحْرِيم",ayahs:12},{id:67,name:"Al-Mulk",arabic:"ٱلْمُلْك",ayahs:30},{id:68,name:"Al-Qalam",arabic:"ٱلْقَلَم",ayahs:52},{id:69,name:"Al-Haqqah",arabic:"ٱلْحَاقَّة",ayahs:52},{id:70,name:"Al-Ma'arij",arabic:"ٱلْمَعَارِج",ayahs:44},
+        {id:71,name:"Nuh",arabic:"نُوح",ayahs:28},{id:72,name:"Al-Jinn",arabic:"ٱلْجِنّ",ayahs:28},{id:73,name:"Al-Muzzammil",arabic:"ٱلْمُزَّمِّل",ayahs:20},{id:74,name:"Al-Muddaththir",arabic:"ٱلْمُدَّثِّر",ayahs:56},{id:75,name:"Al-Qiyamah",arabic:"ٱلْقِيَامَة",ayahs:40},{id:76,name:"Al-Insan",arabic:"ٱلْإِنْسَان",ayahs:31},{id:77,name:"Al-Mursalat",arabic:"ٱلْمُرْسَلَات",ayahs:50},{id:78,name:"An-Naba",arabic:"ٱلنَّبَأ",ayahs:40},{id:79,name:"An-Nazi'at",arabic:"ٱلنَّازِعَات",ayahs:46},{id:80,name:"Abasa",arabic:"عَبَسَ",ayahs:42},
+        {id:81,name:"At-Takwir",arabic:"ٱلتَّكْوِير",ayahs:29},{id:82,name:"Al-Infitar",arabic:"ٱلْإِنْفِطَار",ayahs:19},{id:83,name:"Al-Mutaffifin",arabic:"ٱلْمُطَفِّفِين",ayahs:36},{id:84,name:"Al-Inshiqaq",arabic:"ٱلْإِنْشِقَاق",ayahs:25},{id:85,name:"Al-Buruj",arabic:"ٱلْبُرُوج",ayahs:22},{id:86,name:"At-Tariq",arabic:"ٱلطَّارِق",ayahs:17},{id:87,name:"Al-A'la",arabic:"ٱلْأَعْلَىٰ",ayahs:19},{id:88,name:"Al-Ghashiyah",arabic:"ٱلْغَاشِيَة",ayahs:26},{id:89,name:"Al-Fajr",arabic:"ٱلْفَجْر",ayahs:30},{id:90,name:"Al-Balad",arabic:"ٱلْبَلَد",ayahs:20},
+        {id:91,name:"Ash-Shams",arabic:"ٱلشَّمْس",ayahs:15},{id:92,name:"Al-Layl",arabic:"ٱللَّيْل",ayahs:21},{id:93,name:"Ad-Duha",arabic:"ٱلضُّحَىٰ",ayahs:11},{id:94,name:"Ash-Sharh",arabic:"ٱلشَّرْح",ayahs:8},{id:95,name:"At-Tin",arabic:"ٱلتِّين",ayahs:8},{id:96,name:"Al-Alaq",arabic:"ٱلْعَلَق",ayahs:19},{id:97,name:"Al-Qadr",arabic:"ٱلْقَدْر",ayahs:5},{id:98,name:"Al-Bayyinah",arabic:"ٱلْبَيِّنَة",ayahs:8},{id:99,name:"Az-Zalzalah",arabic:"ٱلزَّلْزَلَة",ayahs:8},{id:100,name:"Al-Adiyat",arabic:"ٱلْعَادِيَات",ayahs:11},
+        {id:101,name:"Al-Qari'ah",arabic:"ٱلْقَارِعَة",ayahs:11},{id:102,name:"At-Takathur",arabic:"ٱلتَّكَاثُر",ayahs:8},{id:103,name:"Al-Asr",arabic:"ٱلْعَصْر",ayahs:3},{id:104,name:"Al-Humazah",arabic:"ٱلْهُمَزَة",ayahs:9},{id:105,name:"Al-Fil",arabic:"ٱلْفِيل",ayahs:5},{id:106,name:"Quraysh",arabic:"قُرَيْش",ayahs:4},{id:107,name:"Al-Ma'un",arabic:"ٱلْمَاعُون",ayahs:7},{id:108,name:"Al-Kawthar",arabic:"ٱلْكَوْثَر",ayahs:3},{id:109,name:"Al-Kafirun",arabic:"ٱلْكَافِرُون",ayahs:6},{id:110,name:"An-Nasr",arabic:"ٱلنَّصْر",ayahs:3},
+        {id:111,name:"Al-Masad",arabic:"ٱلْمَسَد",ayahs:5},{id:112,name:"Al-Ikhlas",arabic:"ٱلْإِخْلَاص",ayahs:4},{id:113,name:"Al-Falaq",arabic:"ٱلْفَلَق",ayahs:5},{id:114,name:"An-Nas",arabic:"ٱلنَّاس",ayahs:6},
       ];
+      const totalAyahs = surahs.reduce((s, x) => s + x.ayahs, 0);
 
-      const totalAyahs = surahs.reduce((sum, s) => sum + s.ayahs, 0);
-
-      // Global variables
+      // ==================== GLOBALS ====================
       let currentUser = null;
       let userProgress = {};
       let unsubscribeProgress = null;
       let isLoginMode = true;
       let currentlyEditingSurahId = null;
-      let scrollTimeout;
+      let currentHadithLang = 'ar';
+      let hadithData = null; // { ar, en, fr, source, desc_en, desc_fr }
+      let currentFilter = 'all';
+      let searchQuery = '';
 
-      // DOM elements
-      const surahListContainer = document.getElementById("surah-list");
-      const loginBtn = document.getElementById("login-btn");
-      const logoutBtn = document.getElementById("logout-btn");
-      const userInfo = document.getElementById("user-info");
-      const userEmailSpan = document.getElementById("user-email");
-      const authModal = document.getElementById("auth-modal");
-      const closeModalBtn = document.getElementById("close-modal-btn");
-      const authForm = document.getElementById("auth-form");
-      const authModalTitle = document.getElementById("auth-modal-title");
-      const authSubmitBtn = document.getElementById("auth-submit-btn");
-      const authFeedback = document.getElementById("auth-feedback");
-      const switchAuthModeLink = document.getElementById("switch-auth-mode");
-      const passwordField = document.getElementById("password-field");
-      const forgotPasswordLink = document.getElementById(
-        "forgot-password-link"
-      );
+      // ==================== DOM ====================
+      const surahListContainer = document.getElementById('surah-list');
+      const loginPrompt = document.getElementById('login-prompt');
+      const loginBtn = document.getElementById('login-btn');
+      const logoutBtn = document.getElementById('logout-btn');
+      const userInfo = document.getElementById('user-info');
+      const userEmailSpan = document.getElementById('user-email');
+      const authModal = document.getElementById('auth-modal');
+      const closeModalBtn = document.getElementById('close-modal-btn');
+      const authForm = document.getElementById('auth-form');
+      const authModalTitle = document.getElementById('auth-modal-title');
+      const authSubmitBtn = document.getElementById('auth-submit-btn');
+      const authFeedback = document.getElementById('auth-feedback');
+      const switchAuthModeLink = document.getElementById('switch-auth-mode');
+      const forgotPasswordLink = document.getElementById('forgot-password-link');
+      const dashboardHeader = document.getElementById('dashboard-header');
+      const overallProgressText = document.getElementById('overall-progress-text');
+      const ayahsReadText = document.getElementById('ayahs-read-text');
+      const surahsCompletedText = document.getElementById('surahs-completed-text');
+      const setProgressModal = document.getElementById('set-progress-modal');
+      const closeProgressModalBtn = document.getElementById('close-progress-modal-btn');
+      const progressModalTitle = document.getElementById('progress-modal-title');
+      const saveProgressBtn = document.getElementById('save-progress-btn');
+      const markAllBtn = document.getElementById('mark-all-btn');
+      const markNoneBtn = document.getElementById('mark-none-btn');
+      const searchInput = document.getElementById('search-input');
+      const searchBar = document.getElementById('search-bar');
 
-      const dashboardHeader = document.getElementById("dashboard-header");
-      const overallProgressText = document.getElementById(
-        "overall-progress-text"
-      );
-      const ayahsReadText = document.getElementById("ayahs-read-text");
-      const surahsCompletedText = document.getElementById(
-        "surahs-completed-text"
-      );
+      // ==================== TOAST ====================
+      function showToast(message, type = 'success') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        const colors = type === 'success'
+          ? 'bg-ruh-teal text-white'
+          : type === 'error' ? 'bg-red-500 text-white' : 'bg-gray-800 text-white';
+        toast.className = `toast ${colors} px-5 py-3 rounded-xl shadow-lg text-sm font-medium flex items-center gap-2 max-w-xs`;
+        const icon = type === 'success' ? '✓' : type === 'error' ? '✗' : 'ℹ';
+        toast.innerHTML = `<span>${icon}</span><span>${message}</span>`;
+        container.appendChild(toast);
+        setTimeout(() => {
+          toast.classList.add('toast-exit');
+          setTimeout(() => toast.remove(), 300);
+        }, 3000);
+      }
 
-      const setProgressModal = document.getElementById("set-progress-modal");
-      const closeProgressModalBtn = document.getElementById(
-        "close-progress-modal-btn"
-      );
-      const progressModalTitle = document.getElementById(
-        "progress-modal-title"
-      );
-      const ayahScroller = document.getElementById("ayah-scroller");
-      const saveProgressBtn = document.getElementById("save-progress-btn");
-      const markAllBtn = document.getElementById("mark-all-btn");
-      const markNoneBtn = document.getElementById("mark-none-btn");
+      // ==================== HADITH (HadeethEnc API) ====================
+      const HADEETH_API = 'https://hadeethenc.com/api/v1';
+      // Use multiple categories for variety (Quran sciences, faith, worship, manners, etc.)
+      const HADITH_CATEGORIES = [1, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
-      // Authentication state change handler
+      function getDayIndex() {
+        const now = new Date();
+        const start = new Date(now.getFullYear(), 0, 0);
+        return Math.floor((now - start) / 86400000);
+      }
+
+      async function fetchDailyHadith() {
+        const today = new Date().toISOString().slice(0, 10);
+        const cacheKey = 'ruh_hadith_v4_' + today;
+
+        // Check cache
+        try {
+          const cached = localStorage.getItem(cacheKey);
+          if (cached) {
+            hadithData = JSON.parse(cached);
+            renderHadith();
+            return;
+          }
+        } catch (e) {}
+
+        try {
+          // Pick a category based on day
+          const dayIdx = getDayIndex();
+          const catId = HADITH_CATEGORIES[dayIdx % HADITH_CATEGORIES.length];
+
+          // Get hadith list from that category (pick page based on day)
+          const listRes = await fetch(`${HADEETH_API}/hadeeths/list/?language=en&category_id=${catId}&page=1&per_page=20`);
+          const listData = await listRes.json();
+          const totalItems = listData.data?.length || 1;
+          const picked = listData.data[dayIdx % totalItems];
+          if (!picked) throw new Error('No hadith in response');
+
+          const hadithId = picked.id;
+
+          // Fetch full hadith in all 3 languages
+          const [enRes, frRes, arRes] = await Promise.all([
+            fetch(`${HADEETH_API}/hadeeths/one/?language=en&id=${hadithId}`).then(r => r.json()),
+            fetch(`${HADEETH_API}/hadeeths/one/?language=fr&id=${hadithId}`).then(r => r.json()),
+            fetch(`${HADEETH_API}/hadeeths/one/?language=ar&id=${hadithId}`).then(r => r.json()),
+          ]);
+
+          // Expand generic attributions to be descriptive like FR
+          const expandAttribution = (attr, lang) => {
+            if (!attr) return '';
+            const maps = {
+              en: { 'Agreed upon': 'Reported by Al-Bukhari and Muslim' },
+              ar: { 'متفق عليه': 'رواه البخاري ومسلم' },
+            };
+            return (maps[lang] && maps[lang][attr]) || attr;
+          };
+
+          hadithData = {
+            ar: enRes.hadeeth_ar || arRes.hadeeth || '',
+            en: enRes.hadeeth || '',
+            fr: frRes.hadeeth || '',
+            source_en: expandAttribution(enRes.attribution, 'en') || 'HadeethEnc',
+            source_fr: frRes.attribution || 'HadeethEnc',
+            source_ar: expandAttribution(arRes.attribution, 'ar') || 'HadeethEnc',
+            grade: enRes.grade || '',
+            desc_en: enRes.explanation || '',
+            desc_fr: frRes.explanation || '',
+            desc_ar: arRes.explanation || '',
+          };
+
+          // Cache (clear old entries including v1 keys)
+          try {
+            Object.keys(localStorage).forEach(k => {
+              if (k.startsWith('ruh_hadith_') && k !== cacheKey) localStorage.removeItem(k);
+            });
+            localStorage.setItem(cacheKey, JSON.stringify(hadithData));
+          } catch (e) {}
+
+          renderHadith();
+        } catch (error) {
+          console.error('HadeethEnc API failed:', error);
+          // Show error state in hadith section
+          const skeleton = document.getElementById('hadith-skeleton');
+          skeleton.innerHTML = '<p class="text-white/50 text-sm text-center">Could not load today\'s hadith. Please check your connection.</p>';
+        }
+      }
+
+      function renderHadith() {
+        if (!hadithData) return;
+
+        const skeleton = document.getElementById('hadith-skeleton');
+        const arabicEl = document.getElementById('hadith-arabic');
+        const arabicText = document.getElementById('hadith-arabic-text');
+        const divider = document.getElementById('hadith-divider');
+        const translationEl = document.getElementById('hadith-translation');
+        const translationText = document.getElementById('hadith-translation-text');
+        const sourceEl = document.getElementById('hadith-source');
+
+        skeleton.classList.add('hidden');
+
+        // Arabic always shown
+        arabicText.textContent = hadithData.ar;
+        arabicEl.classList.remove('hidden', 'hadith-text-hidden');
+
+        divider.classList.remove('hidden');
+
+        // Translation (hide if Arabic selected since Arabic is already shown above)
+        if (currentHadithLang === 'ar') {
+          translationEl.classList.add('hidden');
+          divider.classList.add('hidden');
+        } else {
+          translationText.textContent = hadithData[currentHadithLang] || hadithData.en;
+          translationEl.classList.remove('hidden', 'hadith-text-hidden');
+          divider.classList.remove('hidden');
+        }
+
+        const srcKey = 'source_' + (currentHadithLang || 'en');
+        const srcText = hadithData[srcKey] || hadithData.source_en || '';
+        sourceEl.textContent = currentHadithLang === 'ar' ? `${srcText} —` : `— ${srcText}`;
+        sourceEl.dir = currentHadithLang === 'ar' ? 'rtl' : 'ltr';
+        sourceEl.classList.remove('hidden');
+
+        // Description
+        const descWrapper = document.getElementById('hadith-description-wrapper');
+        const descText = document.getElementById('hadith-description-text');
+        const descKey = currentHadithLang === 'ar' ? 'desc_ar' : currentHadithLang === 'fr' ? 'desc_fr' : 'desc_en';
+        const desc = hadithData[descKey] || hadithData.desc_en || '';
+        const descLabel = document.getElementById('hadith-desc-label');
+        if (descLabel) descLabel.textContent = currentHadithLang === 'ar' ? 'الشرح' : currentHadithLang === 'fr' ? 'Explication' : 'Explanation';
+        if (desc) {
+          descText.textContent = desc;
+          descText.dir = currentHadithLang === 'ar' ? 'rtl' : 'ltr';
+          descText.style.textAlign = currentHadithLang === 'ar' ? 'right' : 'left';
+          descWrapper.classList.remove('hidden');
+        } else {
+          descWrapper.classList.add('hidden');
+        }
+      }
+
+      function switchHadithLang(lang) {
+        if (lang === currentHadithLang) return;
+        currentHadithLang = lang;
+
+        const translationEl = document.getElementById('hadith-translation');
+        const descWrapper = document.getElementById('hadith-description-wrapper');
+        translationEl.classList.add('hadith-text-hidden');
+        if (descWrapper) descWrapper.style.opacity = '0';
+
+        setTimeout(() => {
+          const translationText = document.getElementById('hadith-translation-text');
+          const divider = document.getElementById('hadith-divider');
+          if (lang === 'ar') {
+            translationEl.classList.add('hidden');
+            if (divider) divider.classList.add('hidden');
+          } else {
+            translationText.textContent = hadithData[lang] || hadithData.en;
+            translationEl.classList.remove('hidden', 'hadith-text-hidden');
+            if (divider) divider.classList.remove('hidden');
+          }
+
+          // Update description
+          const descText = document.getElementById('hadith-description-text');
+          const descLabel = document.getElementById('hadith-desc-label');
+          if (descLabel) descLabel.textContent = lang === 'ar' ? 'الشرح' : lang === 'fr' ? 'Explication' : 'Explanation';
+          const descKey = lang === 'ar' ? 'desc_ar' : lang === 'fr' ? 'desc_fr' : 'desc_en';
+          const desc = hadithData[descKey] || hadithData.desc_en || '';
+          if (desc && descText) {
+            descText.textContent = desc;
+            descText.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            descText.style.textAlign = lang === 'ar' ? 'right' : 'left';
+            descWrapper.classList.remove('hidden');
+          }
+          if (descWrapper) descWrapper.style.opacity = '1';
+
+          // Update source
+          const sourceEl = document.getElementById('hadith-source');
+          if (sourceEl) {
+            const srcKey = 'source_' + lang;
+            const srcText = hadithData[srcKey] || hadithData.source_en || '';
+            sourceEl.textContent = lang === 'ar' ? `${srcText} —` : `— ${srcText}`;
+            sourceEl.dir = lang === 'ar' ? 'rtl' : 'ltr';
+          }
+        }, 300);
+
+        // Update pills
+        document.querySelectorAll('.lang-pill').forEach(pill => {
+          if (pill.dataset.lang === lang) {
+            pill.classList.add('lang-pill-active');
+            pill.classList.remove('text-gray-500', 'bg-gray-100', 'hover:bg-gray-200');
+          } else {
+            pill.classList.remove('lang-pill-active');
+            pill.classList.add('text-gray-500', 'bg-gray-100', 'hover:bg-gray-200');
+          }
+        });
+      }
+
+      // Share hadith
+      document.getElementById('hadith-share-btn').addEventListener('click', () => {
+        if (!hadithData) return;
+        const text = `${hadithData.ar}\n\n${hadithData[currentHadithLang]}\n\n— ${hadithData['source_' + currentHadithLang] || hadithData.source_en}`;
+        navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard'));
+      });
+
+      // Language pills
+      document.querySelectorAll('.lang-pill').forEach(pill => {
+        pill.addEventListener('click', () => switchHadithLang(pill.dataset.lang));
+      });
+
+      // ==================== AUTH ====================
       onAuthStateChanged(auth, async (user) => {
+        // Hide loading
+        const loading = document.getElementById('loading');
+        if (loading) {
+          loading.style.opacity = '0';
+          setTimeout(() => loading.style.display = 'none', 500);
+        }
+
         if (user) {
           currentUser = user;
-          userEmailSpan.textContent = user.email || "Anonymous";
-          userInfo.classList.remove("hidden");
-          loginBtn.classList.add("hidden");
-          authModal.classList.add("hidden");
-          dashboardHeader.classList.remove("hidden");
+          userEmailSpan.textContent = user.email || 'Anonymous';
+          userInfo.classList.remove('hidden');
+          userInfo.classList.add('flex');
+          loginBtn.classList.add('hidden');
+          authModal.classList.add('hidden');
+          dashboardHeader.classList.remove('hidden');
+          searchBar.classList.remove('hidden');
+          loginPrompt.classList.add('hidden');
           await setupUserProgressListener(user.uid);
         } else {
           currentUser = null;
@@ -805,436 +966,435 @@
         }
       });
 
-      // Helper functions for authentication feedback
-      const showAuthFeedback = (message, type = "error") => {
+      const showAuthFeedback = (message, type = 'error') => {
         authFeedback.textContent = message;
-        authFeedback.classList.remove(
-          "bg-green-100",
-          "text-green-700",
-          "bg-red-100",
-          "text-red-700"
-        );
-
-        if (type === "error") {
-          authFeedback.classList.add("bg-red-100", "text-red-700");
-        } else {
-          authFeedback.classList.add("bg-green-100", "text-green-700");
-        }
-        authFeedback.classList.remove("hidden");
+        authFeedback.className = `p-3 rounded-xl mb-4 text-sm ${type === 'error' ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}`;
+        authFeedback.classList.remove('hidden');
       };
+      const hideAuthFeedback = () => authFeedback.classList.add('hidden');
 
-      const hideAuthFeedback = () => {
-        authFeedback.classList.add("hidden");
-      };
-
-      // Authentication form handler
       const handleAuthFormSubmit = async (e) => {
         e.preventDefault();
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
         hideAuthFeedback();
-
         try {
-          if (isLoginMode) {
-            await signInWithEmailAndPassword(auth, email, password);
-          } else {
-            await createUserWithEmailAndPassword(auth, email, password);
-          }
+          if (isLoginMode) await signInWithEmailAndPassword(auth, email, password);
+          else await createUserWithEmailAndPassword(auth, email, password);
           authForm.reset();
+          showToast(isLoginMode ? 'Welcome back!' : 'Account created!');
         } catch (error) {
-          showAuthFeedback(error.message, "error");
+          showAuthFeedback(error.message, 'error');
         }
       };
 
-      // Forgot password handler
       const handleForgotPassword = async () => {
-        const email = document.getElementById("email").value;
-        if (!email) {
-          showAuthFeedback("Please enter your email address first.", "error");
-          return;
-        }
+        const email = document.getElementById('email').value;
+        if (!email) { showAuthFeedback('Enter your email first.', 'error'); return; }
         try {
           await sendPasswordResetEmail(auth, email);
-          showAuthFeedback(
-            "Password reset email sent! Check your inbox.",
-            "success"
-          );
-        } catch (error) {
-          showAuthFeedback(error.message, "error");
-        }
+          showAuthFeedback('Reset email sent!', 'success');
+        } catch (error) { showAuthFeedback(error.message, 'error'); }
       };
 
-      // User progress listener setup
+      // ==================== PROGRESS ====================
       const setupUserProgressListener = async (userId) => {
-        const appId =
-          typeof __app_id !== "undefined" ? __app_id : "default-app-id";
-        const userProgressDocRef = doc(
-          db,
-          `artifacts/${appId}/users/${userId}/quranProgress/data`
-        );
-
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const userProgressDocRef = doc(db, `artifacts/${appId}/users/${userId}/quranProgress/data`);
         const docSnap = await getDoc(userProgressDocRef);
         if (!docSnap.exists()) {
-          const initialProgress = {};
-          surahs.forEach((s) => {
-            initialProgress[s.id] = Array(s.ayahs).fill(false);
-          });
-          await setDoc(userProgressDocRef, { progress: initialProgress });
+          const initial = {};
+          surahs.forEach(s => { initial[s.id] = Array(s.ayahs).fill(false); });
+          await setDoc(userProgressDocRef, { progress: initial });
         }
-
-        unsubscribeProgress = onSnapshot(
-          userProgressDocRef,
-          (doc) => {
-            const data = doc.data();
-            if (data && data.progress) {
-              userProgress = data.progress;
-              renderSurahList();
-              updateOverallProgress();
-            }
-          },
-          (error) =>
-            console.error("Error listening to progress updates:", error)
-        );
+        unsubscribeProgress = onSnapshot(userProgressDocRef, (doc) => {
+          const data = doc.data();
+          if (data?.progress) {
+            userProgress = data.progress;
+            renderSurahList();
+            updateOverallProgress();
+          }
+        }, (error) => console.error('Progress listener error:', error));
       };
 
-      // Render Surah list with enhanced cards
+      // ==================== ARABIC NORMALIZATION ====================
+      function normalizeArabic(str) {
+        return str
+          .replace(/[\u064B-\u065F\u0670\u06D6-\u06ED]/g, '') // strip tashkeel/diacritics
+          .replace(/[ٱإأآ]/g, 'ا') // normalize alef variants
+          .replace(/ة/g, 'ه') // taa marbuta → haa
+          .replace(/ى/g, 'ي') // alef maqsura → yaa
+          .replace(/ؤ/g, 'و') // waw hamza → waw
+          .replace(/ئ/g, 'ي') // yaa hamza → yaa
+          .trim();
+      }
+
+      // ==================== RENDER SURAH CARDS ====================
+      function getSurahStatus(surah) {
+        const arr = Array.isArray(userProgress[surah.id]) ? userProgress[surah.id] : [];
+        const read = arr.filter(Boolean).length;
+        const pct = surah.ayahs > 0 ? (read / surah.ayahs) * 100 : 0;
+        return { read, pct, completed: pct === 100, started: pct > 0 };
+      }
+
       const renderSurahList = () => {
-        surahListContainer.innerHTML = "";
+        // Remove existing cards but keep login prompt
+        const existingCards = surahListContainer.querySelectorAll('.surah-card');
+        existingCards.forEach(c => c.remove());
+
+        const query = searchQuery.toLowerCase();
+
         surahs.forEach((surah, index) => {
-          const surahProgressArray = Array.isArray(userProgress[surah.id])
-            ? userProgress[surah.id]
-            : [];
-          const readAyahs = surahProgressArray.filter(Boolean).length;
-          const progress =
-            surah.ayahs > 0 ? (readAyahs / surah.ayahs) * 100 : 0;
-          const isCompleted = progress === 100;
-          const isStarted = progress > 0;
+          const { read, pct, completed, started } = getSurahStatus(surah);
 
-          const card = document.createElement("div");
-          card.className = "group";
-          card.style.animationDelay = `${index * 0.05}s`;
-          card.dataset.surahId = surah.id;
+          // Filter
+          if (currentFilter === 'completed' && !completed) return;
+          if (currentFilter === 'in-progress' && (!started || completed)) return;
+          if (currentFilter === 'not-started' && started) return;
 
-          // Determine card styling based on progress
-          let progressGradient = "from-islamic-teal/5 to-islamic-blue/5";
-          let borderColor = "border-islamic-teal/10";
-          let statusIcon = "📖";
-
-          if (isCompleted) {
-            progressGradient = "from-islamic-gold/10 to-islamic-teal/10";
-            borderColor = "border-islamic-gold/20";
-            statusIcon = "✅";
-          } else if (isStarted) {
-            progressGradient = "from-islamic-teal/8 to-islamic-blue/8";
-            borderColor = "border-islamic-teal/15";
-            statusIcon = "📚";
+          // Search (fuzzy: strip prefixes, hyphens, apostrophes + Arabic normalization)
+          if (query) {
+            const normalQ = normalizeArabic(query);
+            const normalize = (s) => s.toLowerCase().replace(/^(al|an|at|ash|adh|az|ad|ar|as)[\s-]/i, '').replace(/[\s'-]/g, '');
+            const normalizedQuery = normalize(query);
+            const matchEn = surah.name.toLowerCase().includes(query) || normalize(surah.name).includes(normalizedQuery);
+            const matchAr = normalizeArabic(surah.arabic).includes(normalQ);
+            const matchId = String(surah.id).includes(query);
+            if (!matchEn && !matchAr && !matchId) return;
           }
 
-          card.innerHTML = `
-                    <div class="bg-white/90 backdrop-blur-sm rounded-3xl shadow-lg border ${borderColor} p-4 sm:p-6 cursor-pointer transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:bg-white/95 group-hover:border-islamic-teal/30 animate-fade-in relative overflow-hidden">
-                        <!-- Decorative corner elements -->
-                        <div class="absolute top-0 right-0 w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-islamic-gold/5 to-transparent rounded-full -translate-y-8 translate-x-8 sm:-translate-y-10 sm:translate-x-10"></div>
-                        
-                        <!-- Main content -->
-                        <div class="bg-gradient-to-br ${progressGradient} rounded-2xl p-3 sm:p-4 relative z-10">
-                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 sm:gap-4 mb-4">
-                                <div class="flex-1">
-                                    <!-- Header -->
-                                    <div class="flex items-center gap-2 mb-2">
-                                        <span class="text-base sm:text-lg group-hover:scale-110 transition-transform">${statusIcon}</span>
-                                        <p class="text-xs sm:text-sm font-semibold text-islamic-blue/70">Surah ${
-                                          surah.id
-                                        }</p>
-                                    </div>
-                                    
-                                    <!-- Title -->
-                                    <h3 class="text-lg sm:text-xl font-bold text-islamic-blue mb-2 group-hover:text-islamic-teal transition-colors">${
-                                      surah.name
-                                    }</h3>
-                                    
-                                    <!-- Arabic text -->
-                                    <p class="text-xl sm:text-2xl font-amiri text-islamic-teal mb-2 sm:mb-3 leading-relaxed group-hover:scale-105 transition-transform origin-left">${
-                                      surah.arabic
-                                    }</p>
-                                    
-                                    <!-- Progress info for mobile -->
-                                    <div class="text-sm text-islamic-blue/60 sm:hidden">
-                                        <p class="font-medium">${readAyahs} of ${
-            surah.ayahs
-          } verses • ${Math.round(progress)}%</p>
-                                    </div>
-                                    
-                                    <!-- Progress info for desktop -->
-                                    <div class="text-sm text-islamic-blue/60 hidden sm:block">
-                                        <p class="font-medium">${readAyahs} of ${
-            surah.ayahs
-          } verses</p>
-                                    </div>
-                                </div>
-                                
-                                <!-- Progress section - desktop only -->
-                                <div class="text-right flex-shrink-0 ml-4 flex-col items-end hidden sm:flex">
-                                    <!-- Progress circle -->
-                                    <div class="relative w-14 h-14 sm:w-16 sm:h-16 mb-2 group-hover:scale-110 transition-transform">
-                                        <svg class="w-14 h-14 sm:w-16 sm:h-16 transform -rotate-90" viewBox="0 0 36 36">
-                                            <path class="text-gray-200" stroke="currentColor" stroke-width="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                                            <path class="text-islamic-teal transition-all duration-1000" stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none" stroke-dasharray="${progress}, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                                        </svg>
-                                        <div class="absolute inset-0 flex items-center justify-center">
-                                            <span class="text-xs sm:text-sm font-bold text-islamic-blue">${Math.round(
-                                              progress
-                                            )}%</span>
-                                        </div>
-                                    </div>
-                                    
-                                    ${
-                                      isCompleted
-                                        ? '<div class="text-xs text-islamic-gold font-semibold bg-islamic-gold/20 px-2 sm:px-3 py-1 rounded-full border border-islamic-gold/30">Complete</div>'
-                                        : isStarted
-                                        ? '<div class="text-xs text-islamic-teal font-semibold bg-islamic-teal/20 px-2 sm:px-3 py-1 rounded-full border border-islamic-teal/30">In Progress</div>'
-                                        : '<div class="text-xs text-gray-500 font-semibold bg-gray-100 px-2 sm:px-3 py-1 rounded-full border border-gray-200">Not Started</div>'
-                                    }
-                                </div>
-                            </div>
-                            
-                            <!-- Progress bar at bottom -->
-                            <div class="w-full bg-gray-200/70 rounded-full h-1.5 sm:h-2 overflow-hidden">
-                                <div class="bg-gradient-to-r from-islamic-teal to-islamic-gold h-1.5 sm:h-2 rounded-full transition-all duration-1000 ease-out" style="width: ${progress}%"></div>
-                            </div>
-                            
-                            <!-- Status badge for mobile -->
-                            <div class="flex justify-center mt-3 sm:hidden">
-                                ${
-                                  isCompleted
-                                    ? '<div class="text-xs text-islamic-gold font-semibold bg-islamic-gold/20 px-3 py-1 rounded-full border border-islamic-gold/30">Complete</div>'
-                                    : isStarted
-                                    ? '<div class="text-xs text-islamic-teal font-semibold bg-islamic-teal/20 px-3 py-1 rounded-full border border-islamic-teal/30">In Progress</div>'
-                                    : '<div class="text-xs text-gray-500 font-semibold bg-gray-100 px-3 py-1 rounded-full border border-gray-200">Not Started</div>'
-                                }
-                            </div>
-                        </div>
-                    </div>
-                `;
+          const card = document.createElement('div');
+          card.className = 'surah-card card-hidden';
+          card.dataset.surahId = surah.id;
 
-          card.addEventListener("click", () => openSetProgressModal(surah.id));
+          const statusColor = completed ? 'from-ruh-gold/20 to-ruh-teal/10 border-ruh-gold/30' : started ? 'from-ruh-teal/10 to-blue-50 border-ruh-teal/20' : 'from-white to-gray-50 border-gray-200';
+          const badge = completed
+            ? '<span class="text-[10px] font-bold text-ruh-gold bg-ruh-gold/15 px-2.5 py-0.5 rounded-full">COMPLETE</span>'
+            : started
+            ? '<span class="text-[10px] font-bold text-ruh-teal bg-ruh-teal/10 px-2.5 py-0.5 rounded-full">IN PROGRESS</span>'
+            : '<span class="text-[10px] font-bold text-gray-400 bg-gray-100 px-2.5 py-0.5 rounded-full">NOT STARTED</span>';
+
+          card.innerHTML = `
+            <div class="tilt-card bg-gradient-to-br ${statusColor} rounded-2xl border p-5 cursor-pointer transition-all duration-300 hover:border-ruh-teal/40 relative overflow-hidden group">
+              <div class="absolute -top-8 -right-8 w-24 h-24 bg-ruh-gold/5 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
+              <div class="relative z-10">
+                <div class="flex justify-between items-start mb-3">
+                  <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">${surah.id}.</span>
+                  ${badge}
+                </div>
+                <h3 class="text-base font-bold text-gray-800 mb-1 group-hover:text-ruh-teal-dark transition-colors">${surah.name}</h3>
+                <p class="font-amiri text-xl text-ruh-teal-dark mb-3 group-hover:scale-[1.02] transition-transform origin-right" dir="rtl">${surah.arabic}</p>
+                <div class="flex items-center justify-between">
+                  <span class="text-xs text-gray-400">${read}/${surah.ayahs} verses</span>
+                  <div class="flex items-center gap-2">
+                    <div class="w-20 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div class="h-full rounded-full bg-gradient-to-r from-ruh-teal to-ruh-gold transition-all duration-700" style="width:${pct}%"></div>
+                    </div>
+                    <span class="text-xs font-bold ${completed ? 'text-ruh-gold' : started ? 'text-ruh-teal' : 'text-gray-400'}">${Math.round(pct)}%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+
+          card.addEventListener('click', () => openSetProgressModal(surah.id));
           surahListContainer.appendChild(card);
         });
+
+        // Intersection observer for staggered entrance
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry, i) => {
+            if (entry.isIntersecting) {
+              setTimeout(() => {
+                entry.target.classList.remove('card-hidden');
+                entry.target.classList.add('card-visible');
+              }, i * 30);
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.surah-card.card-hidden').forEach(card => observer.observe(card));
       };
 
-      // Update UI for logged out state
+      // ==================== 3D TILT ====================
+      document.addEventListener('mousemove', (e) => {
+        const card = e.target.closest('.tilt-card');
+        if (!card) return;
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = (y - centerY) / centerY * -4;
+        const rotateY = (x - centerX) / centerX * 4;
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+      });
+      document.addEventListener('mouseleave', (e) => {
+        const card = e.target.closest('.tilt-card');
+        if (card) card.style.transform = '';
+      }, true);
+      // Reset tilt when mouse leaves card
+      surahListContainer.addEventListener('mouseleave', (e) => {
+        if (e.target.classList?.contains('tilt-card')) e.target.style.transform = '';
+      }, true);
+      surahListContainer.addEventListener('mouseout', (e) => {
+        const card = e.target.closest('.tilt-card');
+        if (card && !card.contains(e.relatedTarget)) card.style.transform = '';
+      });
+
+      // ==================== SEARCH & FILTER ====================
+      searchInput.addEventListener('input', (e) => {
+        searchQuery = e.target.value;
+        renderSurahList();
+      });
+
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentFilter = btn.dataset.filter;
+          document.querySelectorAll('.filter-btn').forEach(b => {
+            if (b.dataset.filter === currentFilter) {
+              b.classList.add('filter-btn-active');
+              b.classList.remove('text-gray-500', 'bg-white', 'border', 'border-gray-200');
+            } else {
+              b.classList.remove('filter-btn-active');
+              b.classList.add('text-gray-500', 'bg-white', 'border', 'border-gray-200');
+            }
+          });
+          renderSurahList();
+        });
+      });
+
+      // Active filter style
+      const styleEl = document.createElement('style');
+      styleEl.textContent = `.filter-btn-active { background: linear-gradient(135deg, #14b8a6, #0d9488); color: white; box-shadow: 0 4px 12px rgba(20,184,166,0.3); }`;
+      document.head.appendChild(styleEl);
+
+      // ==================== UI UPDATES ====================
       const updateUIForLoggedOut = () => {
-        userInfo.classList.add("hidden");
-        loginBtn.classList.remove("hidden");
-        dashboardHeader.classList.add("hidden");
-        surahListContainer.innerHTML = `
-                <div class="text-center col-span-full py-16">
-                    <div class="text-6xl mb-4 animate-pulse">📖</div>
-                    <p class="text-islamic-blue/60 text-lg font-medium">Please log in to track your spiritual journey</p>
-                    <p class="text-islamic-blue/40 text-sm mt-2">Your progress will be safely stored and synced across devices</p>
-                </div>
-            `;
+        userInfo.classList.add('hidden');
+        userInfo.classList.remove('flex');
+        loginBtn.classList.remove('hidden');
+        dashboardHeader.classList.add('hidden');
+        searchBar.classList.add('hidden');
+        loginPrompt.classList.remove('hidden');
+        const existingCards = surahListContainer.querySelectorAll('.surah-card');
+        existingCards.forEach(c => c.remove());
       };
 
-      // Open progress modal
-      const openSetProgressModal = (surahId) => {
-        if (!currentUser) return;
-        const surah = surahs.find((s) => s.id === surahId);
-        if (!surah) return;
-
-        currentlyEditingSurahId = surahId;
-        progressModalTitle.textContent = `${surah.name} • ${surah.arabic}`;
-        ayahScroller.innerHTML = "";
-
-        // Add padding items
-        for (let i = 0; i < 2; i++) {
-          const paddingEl = document.createElement("div");
-          paddingEl.className =
-            "h-10 flex items-center justify-center text-transparent";
-          paddingEl.textContent = "•";
-          ayahScroller.appendChild(paddingEl);
-        }
-
-        // Add ayah options
-        for (let i = 0; i <= surah.ayahs; i++) {
-          const item = document.createElement("div");
-          item.className =
-            "h-10 flex items-center justify-center text-lg font-medium text-islamic-blue/70 transition-colors hover:text-islamic-teal cursor-pointer";
-          item.dataset.value = i;
-          item.textContent = i === 0 ? "Not Started" : `Ayah ${i}`;
-          ayahScroller.appendChild(item);
-        }
-
-        // Add padding items
-        for (let i = 0; i < 2; i++) {
-          const paddingEl = document.createElement("div");
-          paddingEl.className =
-            "h-10 flex items-center justify-center text-transparent";
-          paddingEl.textContent = "•";
-          ayahScroller.appendChild(paddingEl);
-        }
-
-        const surahProgressArray = Array.isArray(userProgress[surahId])
-          ? userProgress[surahId]
-          : [];
-        const lastReadAyah = surahProgressArray.filter(Boolean).length;
-
-        setTimeout(() => {
-          const itemHeight = 40;
-          ayahScroller.scrollTop = lastReadAyah * itemHeight;
-        }, 100);
-
-        setProgressModal.classList.remove("hidden");
-      };
-
-      // Save progress handler
-      const handleSaveProgress = async () => {
-        if (!currentUser || currentlyEditingSurahId === null) return;
-
-        const surahId = currentlyEditingSurahId;
-        const surah = surahs.find((s) => s.id === surahId);
-        const itemHeight = 40;
-        const lastReadCount = Math.round(ayahScroller.scrollTop / itemHeight);
-
-        const newProgressArray = Array(surah.ayahs)
-          .fill(false)
-          .map((_, i) => i < lastReadCount);
-
-        const appId =
-          typeof __app_id !== "undefined" ? __app_id : "default-app-id";
-        const userProgressDocRef = doc(
-          db,
-          `artifacts/${appId}/users/${currentUser.uid}/quranProgress/data`
-        );
-
-        try {
-          await setDoc(
-            userProgressDocRef,
-            { progress: { [surahId]: newProgressArray } },
-            { merge: true }
-          );
-        } catch (error) {
-          console.error("Error saving progress:", error);
-        } finally {
-          setProgressModal.classList.add("hidden");
-          currentlyEditingSurahId = null;
-        }
-      };
-
-      // Update overall progress
       const updateOverallProgress = () => {
         let totalRead = 0;
-        let surahsCompleted = 0;
-
+        let surahsDone = 0;
         Object.entries(userProgress).forEach(([surahId, ayahs]) => {
           if (Array.isArray(ayahs)) {
             const readCount = ayahs.filter(Boolean).length;
             totalRead += readCount;
-            const surahInfo = surahs.find((s) => s.id == surahId);
-            if (surahInfo && readCount === surahInfo.ayahs) {
-              surahsCompleted++;
-            }
+            const info = surahs.find(s => s.id == surahId);
+            if (info && readCount === info.ayahs) surahsDone++;
           }
         });
+        const pct = totalAyahs > 0 ? (totalRead / totalAyahs) * 100 : 0;
 
-        const percentage = totalAyahs > 0 ? (totalRead / totalAyahs) * 100 : 0;
+        // Animated count-up
+        overallProgressText.textContent = `${pct.toFixed(1)}%`;
+        ayahsReadText.textContent = totalRead.toLocaleString();
+        surahsCompletedText.textContent = surahsDone;
 
-        // Animate the progress text updates
-        overallProgressText.textContent = `${percentage.toFixed(1)}%`;
-        ayahsReadText.textContent = `${totalRead} / ${totalAyahs}`;
-        surahsCompletedText.textContent = `${surahsCompleted} / 114`;
+        // Update ring
+        const ring = document.getElementById('overall-ring');
+        if (ring) ring.setAttribute('stroke-dasharray', `${pct}, 100`);
+      };
 
-        // Update progress bar
-        const progressBar = document.getElementById("overall-progress-bar");
-        if (progressBar) {
-          progressBar.style.width = `${percentage}%`;
+      // ==================== PROGRESS MODAL ====================
+      const ayahCounterNum = document.getElementById('ayah-counter-num');
+      const ayahCounterMax = document.getElementById('ayah-counter-max');
+      const ayahCounterWrapper = document.getElementById('ayah-counter-wrapper');
+      const ayahCounterDisplay = document.getElementById('ayah-counter-display');
+      const modalAyahCount = document.getElementById('modal-ayah-count');
+      let counterValue = 0;
+      let counterMax = 0;
+
+      function setCounter(val) {
+        counterValue = Math.max(0, Math.min(val, counterMax));
+        ayahCounterNum.textContent = counterValue;
+
+        const surah = surahs.find(s => s.id === currentlyEditingSurahId);
+        if (!surah) return;
+        const pct = surah.ayahs > 0 ? (counterValue / surah.ayahs) * 100 : 0;
+
+        // Color shift: gray→teal→gold as progress increases
+        if (counterValue === 0) {
+          ayahCounterNum.className = 'text-5xl font-bold text-gray-300 tabular-nums leading-none transition-colors duration-200';
+        } else if (pct === 100) {
+          ayahCounterNum.className = 'text-5xl font-bold text-ruh-gold tabular-nums leading-none transition-colors duration-200';
+        } else {
+          ayahCounterNum.className = 'text-5xl font-bold text-ruh-teal tabular-nums leading-none transition-colors duration-200';
+        }
+
+        // Update ring
+        const modalRing = document.getElementById('modal-progress-ring');
+        const modalPct = document.getElementById('modal-progress-pct');
+        if (modalRing) modalRing.setAttribute('stroke-dasharray', `${pct}, 100`);
+        if (modalPct) modalPct.textContent = `${Math.round(pct)}%`;
+        if (modalAyahCount) modalAyahCount.textContent = `${counterValue} / ${surah.ayahs} ayahs`;
+      }
+
+      // Scroll wheel on counter — always ±1
+      ayahCounterWrapper.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const dir = e.deltaY > 0 ? -1 : 1;
+        setCounter(counterValue + dir);
+        // Subtle bounce
+        ayahCounterDisplay.style.transform = `translateY(${dir < 0 ? 3 : -3}px)`;
+        setTimeout(() => { ayahCounterDisplay.style.transform = 'translateY(0)'; }, 80);
+      }, { passive: false });
+
+      // +/- buttons
+      document.getElementById('ayah-inc-btn').addEventListener('click', () => setCounter(counterValue + 1));
+      document.getElementById('ayah-dec-btn').addEventListener('click', () => setCounter(counterValue - 1));
+
+      // Hold-to-repeat for +/- buttons
+      ['ayah-inc-btn', 'ayah-dec-btn'].forEach(id => {
+        const btn = document.getElementById(id);
+        let holdTimer, holdInterval, speed;
+        const dir = id === 'ayah-inc-btn' ? 1 : -1;
+        btn.addEventListener('mousedown', () => {
+          speed = 1;
+          holdTimer = setTimeout(() => {
+            holdInterval = setInterval(() => {
+              speed = Math.min(speed + 0.5, 15);
+              setCounter(counterValue + dir * Math.round(speed));
+            }, 50);
+          }, 300);
+        });
+        const stop = () => { clearTimeout(holdTimer); clearInterval(holdInterval); };
+        btn.addEventListener('mouseup', stop);
+        btn.addEventListener('mouseleave', stop);
+      });
+
+      const openSetProgressModal = (surahId) => {
+        if (!currentUser) return;
+        const surah = surahs.find(s => s.id === surahId);
+        if (!surah) return;
+
+        currentlyEditingSurahId = surahId;
+        progressModalTitle.textContent = `${surah.name} — ${surah.arabic}`;
+
+        counterMax = surah.ayahs;
+        ayahCounterMax.textContent = surah.ayahs;
+
+        const arr = Array.isArray(userProgress[surahId]) ? userProgress[surahId] : [];
+        const lastRead = arr.filter(Boolean).length;
+        setCounter(lastRead);
+
+        setProgressModal.classList.remove('hidden');
+      };
+
+      const handleSaveProgress = async () => {
+        if (!currentUser || currentlyEditingSurahId === null) return;
+        const surahId = currentlyEditingSurahId;
+        const surah = surahs.find(s => s.id === surahId);
+        const lastReadCount = counterValue;
+        const newArr = Array(surah.ayahs).fill(false).map((_, i) => i < lastReadCount);
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const ref = doc(db, `artifacts/${appId}/users/${currentUser.uid}/quranProgress/data`);
+
+        try {
+          await setDoc(ref, { progress: { [surahId]: newArr } }, { merge: true });
+          showToast('Progress saved!');
+        } catch (error) {
+          console.error('Save error:', error);
+          showToast('Failed to save', 'error');
+        } finally {
+          setProgressModal.classList.add('hidden');
+          currentlyEditingSurahId = null;
         }
       };
 
-      // Event listeners
-      loginBtn.addEventListener("click", () => {
+      // ==================== EVENT LISTENERS ====================
+      loginBtn.addEventListener('click', () => {
         isLoginMode = true;
-        authModalTitle.textContent = "Login";
-        authSubmitBtn.innerHTML = `
-                <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
-                </svg>
-                Login
-            `;
+        authModalTitle.textContent = 'Login';
+        authSubmitBtn.textContent = 'Login';
         switchAuthModeLink.textContent = "Don't have an account? Sign Up";
-        forgotPasswordLink.style.display = "block";
+        forgotPasswordLink.style.display = 'block';
         hideAuthFeedback();
         authForm.reset();
-        authModal.classList.remove("hidden");
+        authModal.classList.remove('hidden');
       });
 
-      switchAuthModeLink.addEventListener("click", (e) => {
+      switchAuthModeLink.addEventListener('click', (e) => {
         e.preventDefault();
         isLoginMode = !isLoginMode;
-        authModalTitle.textContent = isLoginMode ? "Login" : "Sign Up";
-        authSubmitBtn.innerHTML = isLoginMode
-          ? `
-                <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
-                </svg>
-                Login
-            `
-          : `
-                <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
-                </svg>
-                Sign Up
-            `;
-        switchAuthModeLink.textContent = isLoginMode
-          ? "Don't have an account? Sign Up"
-          : "Already have an account? Login";
-        forgotPasswordLink.style.display = isLoginMode ? "block" : "none";
+        authModalTitle.textContent = isLoginMode ? 'Login' : 'Sign Up';
+        authSubmitBtn.textContent = isLoginMode ? 'Login' : 'Sign Up';
+        switchAuthModeLink.textContent = isLoginMode ? "Don't have an account? Sign Up" : 'Already have an account? Login';
+        forgotPasswordLink.style.display = isLoginMode ? 'block' : 'none';
         hideAuthFeedback();
         authForm.reset();
       });
 
-      forgotPasswordLink.addEventListener("click", (e) => {
-        e.preventDefault();
-        handleForgotPassword();
+      // Password toggle
+      document.getElementById('toggle-password-btn').addEventListener('click', () => {
+        const pwInput = document.getElementById('password');
+        const showIcon = document.getElementById('eye-icon-show');
+        const hideIcon = document.getElementById('eye-icon-hide');
+        if (pwInput.type === 'password') {
+          pwInput.type = 'text';
+          showIcon.classList.add('hidden');
+          hideIcon.classList.remove('hidden');
+        } else {
+          pwInput.type = 'password';
+          showIcon.classList.remove('hidden');
+          hideIcon.classList.add('hidden');
+        }
       });
 
-      logoutBtn.addEventListener("click", () => signOut(auth));
-      closeModalBtn.addEventListener("click", () =>
-        authModal.classList.add("hidden")
-      );
-      authForm.addEventListener("submit", handleAuthFormSubmit);
+      forgotPasswordLink.addEventListener('click', (e) => { e.preventDefault(); handleForgotPassword(); });
+      logoutBtn.addEventListener('click', () => signOut(auth));
+      closeModalBtn.addEventListener('click', () => authModal.classList.add('hidden'));
+      authModal.addEventListener('click', (e) => { if (e.target === authModal) authModal.classList.add('hidden'); });
+      authForm.addEventListener('submit', handleAuthFormSubmit);
 
-      closeProgressModalBtn.addEventListener("click", () =>
-        setProgressModal.classList.add("hidden")
-      );
-      saveProgressBtn.addEventListener("click", handleSaveProgress);
+      closeProgressModalBtn.addEventListener('click', () => setProgressModal.classList.add('hidden'));
+      saveProgressBtn.addEventListener('click', handleSaveProgress);
+      setProgressModal.addEventListener('click', (e) => { if (e.target === setProgressModal) handleSaveProgress(); });
 
-      setProgressModal.addEventListener("click", (e) => {
-        if (e.target === setProgressModal) handleSaveProgress();
+      // ESC key closes modals
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          if (!setProgressModal.classList.contains('hidden')) {
+            setProgressModal.classList.add('hidden');
+          } else if (!authModal.classList.contains('hidden')) {
+            authModal.classList.add('hidden');
+          }
+        }
       });
 
-      const scrollToAyah = (ayahNumber) => {
-        ayahScroller.scrollTo({ top: ayahNumber * 40, behavior: "smooth" });
-      };
-
-      markAllBtn.addEventListener("click", () => {
-        const surah = surahs.find((s) => s.id === currentlyEditingSurahId);
-        if (surah) scrollToAyah(surah.ayahs);
+      markAllBtn.addEventListener('click', () => {
+        const surah = surahs.find(s => s.id === currentlyEditingSurahId);
+        if (surah) setCounter(surah.ayahs);
+      });
+      markNoneBtn.addEventListener('click', () => {
+        setCounter(0);
       });
 
-      markNoneBtn.addEventListener("click", () => scrollToAyah(0));
+      // ==================== INIT ====================
+      // Hide search bar initially (shown on login)
+      if (!currentUser) searchBar.classList.add('hidden');
 
-      ayahScroller.addEventListener("scroll", () => {
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(() => {
-          const itemHeight = 40;
-          const snappedScrollTop =
-            Math.round(ayahScroller.scrollTop / itemHeight) * itemHeight;
-          ayahScroller.scrollTo({ top: snappedScrollTop, behavior: "smooth" });
-        }, 150);
-      });
+      // Load daily hadith
+      fetchDailyHadith();
 
-      // Initialize
-      renderSurahList();
+      // Loading screen fallback
+      setTimeout(() => {
+        const loading = document.getElementById('loading');
+        if (loading && loading.style.display !== 'none') {
+          loading.style.opacity = '0';
+          setTimeout(() => loading.style.display = 'none', 500);
+        }
+      }, 3000);
     </script>
   </body>
 </html>
