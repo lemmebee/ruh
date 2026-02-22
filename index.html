@@ -457,7 +457,12 @@
             </div>
 
             <!-- Source -->
-            <p id="hadith-source" class="hidden text-xs text-gray-400 mt-4 font-medium"></p>
+            <div id="hadith-source-wrapper" class="hidden flex items-center gap-2 mt-4">
+              <p id="hadith-source" class="text-xs text-gray-400 font-medium"></p>
+              <a id="hadith-link" href="#" target="_blank" rel="noopener" class="text-ruh-teal/60 hover:text-ruh-teal transition-colors" title="View on HadeethEnc">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+              </a>
+            </div>
           </div>
 
           <!-- Language toggle -->
@@ -745,7 +750,7 @@
 
       async function fetchDailyHadith() {
         const today = new Date().toISOString().slice(0, 10);
-        const cacheKey = 'ruh_hadith_v4_' + today;
+        const cacheKey = 'ruh_hadith_v7_' + today;
 
         // Check cache
         try {
@@ -762,11 +767,15 @@
           const dayIdx = getDayIndex();
           const catId = HADITH_CATEGORIES[dayIdx % HADITH_CATEGORIES.length];
 
-          // Get hadith list from that category (pick page based on day)
-          const listRes = await fetch(`${HADEETH_API}/hadeeths/list/?language=en&category_id=${catId}&page=1&per_page=20`);
-          const listData = await listRes.json();
-          const totalItems = listData.data?.length || 1;
-          const picked = listData.data[dayIdx % totalItems];
+          // Get hadith lists in EN and FR, intersect to ensure FR availability
+          const [enList, frList] = await Promise.all([
+            fetch(`${HADEETH_API}/hadeeths/list/?language=en&category_id=${catId}&page=1&per_page=20`).then(r => r.json()),
+            fetch(`${HADEETH_API}/hadeeths/list/?language=fr&category_id=${catId}&page=1&per_page=20`).then(r => r.json()),
+          ]);
+          const frIds = new Set((frList.data || []).map(h => h.id));
+          const available = (enList.data || []).filter(h => frIds.has(h.id));
+          const pool = available.length > 0 ? available : enList.data || [];
+          const picked = pool[dayIdx % pool.length];
           if (!picked) throw new Error('No hadith in response');
 
           const hadithId = picked.id;
@@ -788,17 +797,22 @@
             return (maps[lang] && maps[lang][attr]) || attr;
           };
 
+          // FR may not be available for all hadiths — fallback to EN
+          const fr = (frRes && typeof frRes === 'object') ? frRes : {};
+
           hadithData = {
             ar: enRes.hadeeth_ar || arRes.hadeeth || '',
             en: enRes.hadeeth || '',
-            fr: frRes.hadeeth || '',
-            source_en: expandAttribution(enRes.attribution, 'en') || 'HadeethEnc',
-            source_fr: frRes.attribution || 'HadeethEnc',
-            source_ar: expandAttribution(arRes.attribution, 'ar') || 'HadeethEnc',
+            fr: fr.hadeeth || enRes.hadeeth || '',
+            source_en: expandAttribution(enRes.attribution, 'en') || enRes.attribution || '',
+            source_fr: fr.attribution || expandAttribution(enRes.attribution, 'en') || '',
+            source_ar: expandAttribution(arRes.attribution, 'ar') || arRes.attribution || '',
             grade: enRes.grade || '',
             desc_en: enRes.explanation || '',
-            desc_fr: frRes.explanation || '',
+            desc_fr: fr.explanation || enRes.explanation || '',
             desc_ar: arRes.explanation || '',
+            hadithId: hadithId,
+            hasFr: !!fr.hadeeth,
           };
 
           // Cache (clear old entries including v1 keys)
@@ -850,8 +864,13 @@
         const srcKey = 'source_' + (currentHadithLang || 'en');
         const srcText = hadithData[srcKey] || hadithData.source_en || '';
         sourceEl.textContent = currentHadithLang === 'ar' ? `${srcText} —` : `— ${srcText}`;
-        sourceEl.dir = currentHadithLang === 'ar' ? 'rtl' : 'ltr';
-        sourceEl.classList.remove('hidden');
+        const sourceWrapper = document.getElementById('hadith-source-wrapper');
+        sourceWrapper.dir = currentHadithLang === 'ar' ? 'rtl' : 'ltr';
+        sourceWrapper.style.justifyContent = currentHadithLang === 'ar' ? 'flex-end' : 'flex-start';
+        const hadithLink = document.getElementById('hadith-link');
+        const linkLang = currentHadithLang === 'ar' ? 'ar' : (currentHadithLang === 'fr' && hadithData.hasFr) ? 'fr' : 'en';
+        if (hadithData.hadithId) hadithLink.href = `https://hadeethenc.com/${linkLang}/browse/hadith/${hadithData.hadithId}`;
+        sourceWrapper.classList.remove('hidden');
 
         // Description
         const descWrapper = document.getElementById('hadith-description-wrapper');
@@ -905,13 +924,22 @@
           }
           if (descWrapper) descWrapper.style.opacity = '1';
 
-          // Update source
+          // Update source + link
           const sourceEl = document.getElementById('hadith-source');
+          const sourceWrapper = document.getElementById('hadith-source-wrapper');
+          const hadithLink = document.getElementById('hadith-link');
           if (sourceEl) {
             const srcKey = 'source_' + lang;
             const srcText = hadithData[srcKey] || hadithData.source_en || '';
             sourceEl.textContent = lang === 'ar' ? `${srcText} —` : `— ${srcText}`;
-            sourceEl.dir = lang === 'ar' ? 'rtl' : 'ltr';
+          }
+          if (sourceWrapper) {
+            sourceWrapper.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            sourceWrapper.style.justifyContent = lang === 'ar' ? 'flex-end' : 'flex-start';
+          }
+          if (hadithLink && hadithData.hadithId) {
+            const linkLang = lang === 'ar' ? 'ar' : (lang === 'fr' && hadithData.hasFr) ? 'fr' : 'en';
+            hadithLink.href = `https://hadeethenc.com/${linkLang}/browse/hadith/${hadithData.hadithId}`;
           }
         }, 300);
 
