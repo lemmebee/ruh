@@ -6,6 +6,8 @@
     <title>Ruh . روح</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
     <script>
       tailwind.config = {
         theme: {
@@ -389,6 +391,38 @@
               <p class="text-[10px] text-white/25 mt-0.5">of 114</p>
             </div>
           </div>
+
+          <!-- Row 2: Secondary stats -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-3 sm:mt-4 stagger-children">
+            <div class="glass rounded-xl p-3 sm:p-4 text-center group hover:bg-white/10 transition-all duration-300">
+              <p id="juz-completed-text" class="text-lg sm:text-xl font-bold bg-gradient-to-r from-ruh-teal to-ruh-gold-light bg-clip-text text-transparent">0/30</p>
+              <p class="text-[10px] sm:text-xs text-white/40 font-medium uppercase tracking-wider mt-1">Juz'</p>
+            </div>
+            <div class="glass rounded-xl p-3 sm:p-4 text-center group hover:bg-white/10 transition-all duration-300">
+              <p id="current-streak-text" class="text-lg sm:text-xl font-bold text-white">0</p>
+              <p class="text-[10px] sm:text-xs text-white/40 font-medium uppercase tracking-wider mt-1">Day Streak</p>
+            </div>
+            <div class="glass rounded-xl p-3 sm:p-4 text-center group hover:bg-white/10 transition-all duration-300">
+              <p id="longest-streak-text" class="text-lg sm:text-xl font-bold text-white/70">0</p>
+              <p class="text-[10px] sm:text-xs text-white/40 font-medium uppercase tracking-wider mt-1">Best Streak</p>
+            </div>
+            <div class="glass rounded-xl p-3 sm:p-4 text-center group hover:bg-white/10 transition-all duration-300">
+              <p id="est-completion-text" class="text-lg sm:text-xl font-bold text-ruh-gold/80">--</p>
+              <p class="text-[10px] sm:text-xs text-white/40 font-medium uppercase tracking-wider mt-1">Est. Done</p>
+            </div>
+          </div>
+
+          <!-- Row 3: Progress chart (collapsible) -->
+          <div class="mt-4 sm:mt-5">
+            <button id="toggle-chart-btn" class="glass rounded-xl px-4 py-2.5 text-xs text-white/60 hover:text-white/90 hover:bg-white/10 transition-all w-full flex items-center justify-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6m6 0V9a2 2 0 012-2h2a2 2 0 012 2v10m6 0v-4a2 2 0 00-2-2h-2a2 2 0 00-2 2v4"/></svg>
+              Progress Over Time
+              <svg id="chart-chevron" class="w-3 h-3 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div id="chart-container" class="hidden mt-3 glass rounded-2xl p-4 sm:p-6" style="height:260px">
+              <canvas id="progress-chart"></canvas>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -658,7 +692,7 @@
 
       import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
       import { getAuth, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-      import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+      import { getFirestore, doc, setDoc, getDoc, onSnapshot, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
@@ -681,6 +715,101 @@
       ];
       const totalAyahs = surahs.reduce((s, x) => s + x.ayahs, 0);
 
+      // Juz boundaries (Medina Mushaf standard) — each juz starts at surah:ayah
+      const juzBoundaries = [
+        {surah:1,ayah:1},{surah:2,ayah:142},{surah:2,ayah:253},{surah:3,ayah:93},{surah:4,ayah:24},
+        {surah:4,ayah:148},{surah:5,ayah:83},{surah:6,ayah:111},{surah:7,ayah:88},{surah:8,ayah:41},
+        {surah:9,ayah:93},{surah:11,ayah:6},{surah:12,ayah:53},{surah:15,ayah:1},{surah:17,ayah:1},
+        {surah:18,ayah:75},{surah:21,ayah:1},{surah:23,ayah:1},{surah:25,ayah:21},{surah:27,ayah:56},
+        {surah:29,ayah:46},{surah:33,ayah:31},{surah:36,ayah:28},{surah:39,ayah:32},{surah:41,ayah:47},
+        {surah:46,ayah:1},{surah:51,ayah:31},{surah:58,ayah:1},{surah:67,ayah:1},{surah:78,ayah:1},
+      ];
+
+      // Build flat ayah-to-juz index: for each surah, which juz does each ayah belong to
+      const ayahJuzMap = {}; // { surahId: [juzIndex per ayah] }
+      (function buildJuzMap() {
+        surahs.forEach(s => { ayahJuzMap[s.id] = new Array(s.ayahs).fill(0); });
+        for (let j = 0; j < 30; j++) {
+          const start = juzBoundaries[j];
+          const end = j < 29 ? juzBoundaries[j + 1] : { surah: 115, ayah: 1 };
+          for (let sid = start.surah; sid < end.surah || (sid === end.surah && end.ayah > 1); sid++) {
+            const info = surahs.find(s => s.id === sid);
+            if (!info) continue;
+            const from = sid === start.surah ? start.ayah - 1 : 0;
+            const to = sid === end.surah ? end.ayah - 1 : info.ayahs;
+            for (let a = from; a < to; a++) ayahJuzMap[sid][a] = j;
+          }
+        }
+      })();
+
+      function computeJuzProgress(progress) {
+        const juzRead = new Array(30).fill(0);
+        const juzTotal = new Array(30).fill(0);
+        surahs.forEach(s => {
+          const arr = progress[s.id];
+          const map = ayahJuzMap[s.id];
+          for (let i = 0; i < s.ayahs; i++) {
+            const j = map[i];
+            juzTotal[j]++;
+            if (Array.isArray(arr) && arr[i]) juzRead[j]++;
+          }
+        });
+        let completed = 0;
+        for (let j = 0; j < 30; j++) if (juzRead[j] === juzTotal[j] && juzTotal[j] > 0) completed++;
+        return completed;
+      }
+
+      function getLocalDateStr() {
+        return new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD in local tz
+      }
+
+      function computeStreakMetrics(activity) {
+        const today = getLocalDateStr();
+        const activeDates = Object.keys(activity).filter(d => activity[d] > 0).sort();
+        if (activeDates.length === 0) return { currentStreak: 0, longestStreak: 0, avgPerDay: 0, estDate: null };
+
+        // Current streak: consecutive days ending today or yesterday
+        let currentStreak = 0;
+        let checkDate = new Date(today + 'T00:00:00');
+        if (!activity[today] || activity[today] <= 0) {
+          checkDate.setDate(checkDate.getDate() - 1);
+        }
+        while (true) {
+          const key = checkDate.toLocaleDateString('en-CA');
+          if (activity[key] && activity[key] > 0) {
+            currentStreak++;
+            checkDate.setDate(checkDate.getDate() - 1);
+          } else break;
+        }
+
+        // Longest streak
+        let longestStreak = 1, tempStreak = 1;
+        for (let i = 1; i < activeDates.length; i++) {
+          const prev = new Date(activeDates[i - 1] + 'T00:00:00');
+          const curr = new Date(activeDates[i] + 'T00:00:00');
+          const diff = (curr - prev) / 86400000;
+          if (diff === 1) tempStreak++;
+          else tempStreak = 1;
+          longestStreak = Math.max(longestStreak, tempStreak);
+        }
+
+        // Avg ayahs/day (total span)
+        const totalDelta = Object.values(activity).reduce((s, v) => s + Math.max(0, v), 0);
+        const firstDate = activeDates[0];
+        const daySpan = Math.max(1, Math.ceil((new Date(today + 'T00:00:00') - new Date(firstDate + 'T00:00:00')) / 86400000) + 1);
+        const avgPerDay = totalDelta / daySpan;
+
+        // Est. completion
+        const remaining = totalAyahs - totalDelta; // approximate — actual is from userProgress
+        let estDate = null;
+        if (avgPerDay > 0 && remaining > 0) {
+          estDate = new Date();
+          estDate.setDate(estDate.getDate() + Math.ceil(remaining / avgPerDay));
+        }
+
+        return { currentStreak, longestStreak, avgPerDay, estDate };
+      }
+
       // ==================== GLOBALS ====================
       let currentUser = null;
       let userProgress = {};
@@ -691,6 +820,9 @@
       let hadithData = null; // { ar, en, fr, source, desc_en, desc_fr }
       let currentFilter = 'all';
       let searchQuery = '';
+      let dailyActivity = {};
+      let unsubscribeActivity = null;
+      let progressChart = null;
 
       // ==================== DOM ====================
       const surahListContainer = document.getElementById('surah-list');
@@ -711,6 +843,13 @@
       const overallProgressText = document.getElementById('overall-progress-text');
       const ayahsReadText = document.getElementById('ayahs-read-text');
       const surahsCompletedText = document.getElementById('surahs-completed-text');
+      const juzCompletedText = document.getElementById('juz-completed-text');
+      const currentStreakText = document.getElementById('current-streak-text');
+      const longestStreakText = document.getElementById('longest-streak-text');
+      const estCompletionText = document.getElementById('est-completion-text');
+      const toggleChartBtn = document.getElementById('toggle-chart-btn');
+      const chartContainer = document.getElementById('chart-container');
+      const chartChevron = document.getElementById('chart-chevron');
       const setProgressModal = document.getElementById('set-progress-modal');
       const closeProgressModalBtn = document.getElementById('close-progress-modal-btn');
       const progressModalTitle = document.getElementById('progress-modal-title');
@@ -990,7 +1129,10 @@
         } else {
           currentUser = null;
           if (unsubscribeProgress) unsubscribeProgress();
+          if (unsubscribeActivity) unsubscribeActivity();
           userProgress = {};
+          dailyActivity = {};
+          if (progressChart) { progressChart.destroy(); progressChart = null; }
           updateUIForLoggedOut();
         }
       });
@@ -1044,6 +1186,23 @@
             updateOverallProgress();
           }
         }, (error) => console.error('Progress listener error:', error));
+
+        // Daily activity tracking
+        const activityRef = doc(db, `artifacts/${appId}/users/${userId}/quranProgress/dailyActivity`);
+        const activitySnap = await getDoc(activityRef);
+        if (!activitySnap.exists()) {
+          // Migration: seed with current total as baseline
+          const snap = await getDoc(userProgressDocRef);
+          const prog = snap.data()?.progress || {};
+          const totalRead = Object.values(prog).reduce((s, arr) => s + (Array.isArray(arr) ? arr.filter(Boolean).length : 0), 0);
+          if (totalRead > 0) {
+            await setDoc(activityRef, { [getLocalDateStr()]: totalRead });
+          }
+        }
+        unsubscribeActivity = onSnapshot(activityRef, (doc) => {
+          dailyActivity = doc.exists() ? doc.data() : {};
+          updateOverallProgress();
+        }, (error) => console.error('Activity listener error:', error));
       };
 
       // ==================== ARABIC NORMALIZATION ====================
@@ -1224,15 +1383,107 @@
         });
         const pct = totalAyahs > 0 ? (totalRead / totalAyahs) * 100 : 0;
 
-        // Animated count-up
+        // Row 1: primary stats
         overallProgressText.textContent = `${pct.toFixed(1)}%`;
         ayahsReadText.textContent = totalRead.toLocaleString();
         surahsCompletedText.textContent = surahsDone;
 
-        // Update ring
         const ring = document.getElementById('overall-ring');
         if (ring) ring.setAttribute('stroke-dasharray', `${pct}, 100`);
+
+        // Row 2: juz
+        const juzDone = computeJuzProgress(userProgress);
+        juzCompletedText.textContent = `${juzDone}/30`;
+
+        // Row 2: streaks + estimation (from daily activity)
+        const metrics = computeStreakMetrics(dailyActivity);
+        currentStreakText.textContent = metrics.currentStreak;
+        longestStreakText.textContent = metrics.longestStreak;
+
+        // Override est. completion with actual totalRead for accuracy
+        if (metrics.avgPerDay > 0 && totalRead < totalAyahs) {
+          const remaining = totalAyahs - totalRead;
+          const estDate = new Date();
+          estDate.setDate(estDate.getDate() + Math.ceil(remaining / metrics.avgPerDay));
+          const month = estDate.toLocaleString('en', { month: 'short' });
+          const year = estDate.getFullYear();
+          estCompletionText.textContent = `${month} ${year}`;
+        } else if (totalRead >= totalAyahs) {
+          estCompletionText.textContent = 'Done!';
+        } else {
+          estCompletionText.textContent = '--';
+        }
+
+        // Update chart if visible
+        if (chartContainer && !chartContainer.classList.contains('hidden')) {
+          renderProgressChart();
+        }
       };
+
+      function renderProgressChart() {
+        const ctx = document.getElementById('progress-chart');
+        if (!ctx || typeof Chart === 'undefined') return;
+
+        const dates = Object.keys(dailyActivity).sort();
+        if (dates.length === 0) return;
+
+        let cumulative = 0;
+        const data = dates.map(d => {
+          cumulative += dailyActivity[d];
+          return { x: d, y: cumulative };
+        });
+
+        if (progressChart) progressChart.destroy();
+
+        progressChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            datasets: [{
+              label: 'Ayahs Read',
+              data: data,
+              borderColor: '#14b8a6',
+              backgroundColor: 'rgba(20, 184, 166, 0.1)',
+              fill: true,
+              tension: 0.3,
+              pointRadius: dates.length > 30 ? 0 : 3,
+              pointHoverRadius: 5,
+              borderWidth: 2,
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            scales: {
+              x: {
+                type: 'time',
+                time: { unit: dates.length > 90 ? 'month' : dates.length > 14 ? 'week' : 'day' },
+                ticks: { color: 'rgba(255,255,255,0.4)', font: { size: 10 } },
+                grid: { color: 'rgba(255,255,255,0.05)' },
+              },
+              y: {
+                beginAtZero: true,
+                max: totalAyahs,
+                ticks: { color: 'rgba(255,255,255,0.4)', font: { size: 10 } },
+                grid: { color: 'rgba(255,255,255,0.05)' },
+              }
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: 'rgba(15, 23, 41, 0.9)',
+                titleColor: 'rgba(255,255,255,0.7)',
+                bodyColor: '#14b8a6',
+                borderColor: 'rgba(255,255,255,0.1)',
+                borderWidth: 1,
+                callbacks: {
+                  label: (ctx) => `${ctx.parsed.y.toLocaleString()} / ${totalAyahs.toLocaleString()} ayahs`
+                }
+              }
+            }
+          }
+        });
+      }
 
       // ==================== PROGRESS MODAL ====================
       const ayahCounterNum = document.getElementById('ayah-counter-num');
@@ -1326,11 +1577,23 @@
         const lastReadCount = counterValue;
         const newArr = Array(surah.ayahs).fill(false).map((_, i) => i < lastReadCount);
 
+        // Compute delta for daily activity tracking
+        const oldArr = Array.isArray(userProgress[surahId]) ? userProgress[surahId] : [];
+        const oldCount = oldArr.filter(Boolean).length;
+        const delta = lastReadCount - oldCount;
+
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const ref = doc(db, `artifacts/${appId}/users/${currentUser.uid}/quranProgress/data`);
 
         try {
           await setDoc(ref, { progress: { [surahId]: newArr } }, { merge: true });
+
+          // Track positive deltas in daily activity
+          if (delta > 0) {
+            const activityRef = doc(db, `artifacts/${appId}/users/${currentUser.uid}/quranProgress/dailyActivity`);
+            await setDoc(activityRef, { [getLocalDateStr()]: increment(delta) }, { merge: true });
+          }
+
           showToast('Progress saved!');
         } catch (error) {
           console.error('Save error:', error);
@@ -1342,6 +1605,12 @@
       };
 
       // ==================== EVENT LISTENERS ====================
+      toggleChartBtn.addEventListener('click', () => {
+        const isHidden = chartContainer.classList.toggle('hidden');
+        chartChevron.style.transform = isHidden ? '' : 'rotate(180deg)';
+        if (!isHidden) renderProgressChart();
+      });
+
       loginBtn.addEventListener('click', () => {
         isLoginMode = true;
         authModalTitle.textContent = 'Login';
